@@ -23,7 +23,9 @@ public class UserDetailsServiceImpl {
 	public boolean insertUserDetails(UserDetailsDto userDetailsDto) {
 		try {
 			logger.info("Service method is invoking " + mapper.writeValueAsString(userDetailsDto));
+			// here we are converting the values from  DTO class to entity class
 			UserDetails details = mapper.convertValue(userDetailsDto, UserDetails.class);
+			// if the user will save it will return true other wise false
 			return userDetailsRepository.save(details).getUserId() != null;
 		} catch (Exception ex) {
 			ex.printStackTrace();
