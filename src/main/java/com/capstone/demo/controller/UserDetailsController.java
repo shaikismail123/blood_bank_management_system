@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,11 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.capstone.demo.config.AppConstants;
 import com.capstone.demo.config.DefaultValues;
 import com.capstone.demo.dto.UserDetailsDto;
-import com.capstone.demo.service.UserDetailsServiceImpl;
+import com.capstone.demo.service.MyUserDetailsServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RequestMapping("/userDetails")
 @RestController
+@CrossOrigin(value="*")
 public class UserDetailsController {
 
 	private Logger logger = LoggerFactory.getLogger(UserDetailsController.class);
@@ -25,7 +27,7 @@ public class UserDetailsController {
 	private ObjectMapper mapper = new ObjectMapper();
 
 	@Autowired
-	private UserDetailsServiceImpl userDetailsServiceImpl;
+	private MyUserDetailsServiceImpl userDetailsServiceImpl;
 
 	@Autowired
 	private DefaultValues defaultValues;
