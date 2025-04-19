@@ -13,7 +13,7 @@ import lombok.Builder;
 import lombok.Data;
 
 @Entity
-@Table(name = "users_details")
+@Table(name = "my_users_details")
 @Builder
 public class MyUserDetails {
 

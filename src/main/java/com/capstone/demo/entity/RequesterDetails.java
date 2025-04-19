@@ -11,27 +11,37 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 
 @Entity
-@Table(name = "blood_request")
+@Table(name = "requester_details")
 public class RequesterDetails {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long requestId;
 
-	@ManyToOne
-	@JoinColumn(name = "requester_id", nullable = false)
-	private MyUserDetails requester;
+//	@ManyToOne
+//	@JoinColumn(name = "requester_id", nullable = false)
+//	private MyUserDetails requester;
+
+	private Long requesterId;
+
+	private Long donarId;
 
 	private String patientName;
+	
 	private String requiredBloodGroup;
+	
 	private String city;
+	
 	private String doctorName;
+	
 	private String hospitalName;
+	
 	private String hospitalAddress;
 
 	private String requiredDate;
 
 	private String contactName;
+	
 	private String contactNumber;
 	@Email
 	private String contactEmail;
@@ -45,6 +55,28 @@ public class RequesterDetails {
 
 	}
 
+	public RequesterDetails(Long requestId, Long requesterId, Long donarId, String patientName,
+			String requiredBloodGroup, String city, String doctorName, String hospitalName, String hospitalAddress,
+			String requiredDate, String contactName, String contactNumber, @Email String contactEmail, String message,
+			String status) {
+		super();
+		this.requestId = requestId;
+		this.requesterId = requesterId;
+		this.donarId = donarId;
+		this.patientName = patientName;
+		this.requiredBloodGroup = requiredBloodGroup;
+		this.city = city;
+		this.doctorName = doctorName;
+		this.hospitalName = hospitalName;
+		this.hospitalAddress = hospitalAddress;
+		this.requiredDate = requiredDate;
+		this.contactName = contactName;
+		this.contactNumber = contactNumber;
+		this.contactEmail = contactEmail;
+		this.message = message;
+		this.status = status;
+	}
+
 	public Long getRequestId() {
 		return requestId;
 	}
@@ -53,12 +85,20 @@ public class RequesterDetails {
 		this.requestId = requestId;
 	}
 
-	public MyUserDetails getRequester() {
-		return requester;
+	public Long getRequesterId() {
+		return requesterId;
 	}
 
-	public void setRequester(MyUserDetails requester) {
-		this.requester = requester;
+	public void setRequesterId(Long requesterId) {
+		this.requesterId = requesterId;
+	}
+
+	public Long getDonarId() {
+		return donarId;
+	}
+
+	public void setDonarId(Long donarId) {
+		this.donarId = donarId;
 	}
 
 	public String getPatientName() {
@@ -157,33 +197,17 @@ public class RequesterDetails {
 		this.status = status;
 	}
 
-	public RequesterDetails(Long requestId, MyUserDetails requester, String patientName, String requiredBloodGroup,
-			String city, String doctorName, String hospitalName, String hospitalAddress, String requiredDate,
-			String contactName, String contactNumber, String contactEmail, String message, String status) {
-		super();
-		this.requestId = requestId;
-		this.requester = requester;
-		this.patientName = patientName;
-		this.requiredBloodGroup = requiredBloodGroup;
-		this.city = city;
-		this.doctorName = doctorName;
-		this.hospitalName = hospitalName;
-		this.hospitalAddress = hospitalAddress;
-		this.requiredDate = requiredDate;
-		this.contactName = contactName;
-		this.contactNumber = contactNumber;
-		this.contactEmail = contactEmail;
-		this.message = message;
-		this.status = status;
-	}
-
 	@Override
 	public String toString() {
-		return "RequesterDetails [requestId=" + requestId + ", requester=" + requester + ", patientName=" + patientName
-				+ ", requiredBloodGroup=" + requiredBloodGroup + ", city=" + city + ", doctorName=" + doctorName
-				+ ", hospitalName=" + hospitalName + ", hospitalAddress=" + hospitalAddress + ", requiredDate="
-				+ requiredDate + ", contactName=" + contactName + ", contactNumber=" + contactNumber + ", contactEmail="
-				+ contactEmail + ", message=" + message + ", status=" + status + "]";
+		return "RequesterDetails [requestId=" + requestId + ", requesterId=" + requesterId + ", donarId=" + donarId
+				+ ", patientName=" + patientName + ", requiredBloodGroup=" + requiredBloodGroup + ", city=" + city
+				+ ", doctorName=" + doctorName + ", hospitalName=" + hospitalName + ", hospitalAddress="
+				+ hospitalAddress + ", requiredDate=" + requiredDate + ", contactName=" + contactName
+				+ ", contactNumber=" + contactNumber + ", contactEmail=" + contactEmail + ", message=" + message
+				+ ", status=" + status + "]";
 	}
 
+	
+	
+	
 }

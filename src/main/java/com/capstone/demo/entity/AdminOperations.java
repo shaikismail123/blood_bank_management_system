@@ -29,9 +29,6 @@ public class AdminOperations {
 	private Long adminId;
 
 	@ManyToOne
-	private MyUserDetails myUserDetails;
-
-	@ManyToOne
 	private RequesterDetails requesterDetails;
 
 	private String approvalStatus;

@@ -1,5 +1,9 @@
 package com.capstone.demo.repository;
 
-public interface AdminDetailsRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.capstone.demo.entity.AdminOperations;
+
+public interface AdminDetailsRepository extends JpaRepository<AdminOperations, Long> {
 
 }

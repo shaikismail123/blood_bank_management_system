@@ -1,6 +1,8 @@
 package com.capstone.demo.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -11,7 +13,6 @@ import org.springframework.stereotype.Service;
 import com.capstone.demo.config.AppConstants;
 import com.capstone.demo.config.DefaultValues;
 import com.capstone.demo.dto.RequesterDetailsDto;
-import com.capstone.demo.entity.MyUserDetails;
 import com.capstone.demo.entity.RequesterDetails;
 import com.capstone.demo.repository.MyUserDetailsRepository;
 import com.capstone.demo.repository.RequesterDetailsRepository;
@@ -33,16 +34,16 @@ public class RequesterDetailsServiceImpl implements RequesterDetailsService {
 	DefaultValues defaultValues;
 
 	@Override
-	public boolean saveRequesterDetails(RequesterDetailsDto requesterDetailsDto, Long requesterId) {
+	public boolean saveRequesterDetails(RequesterDetailsDto requesterDetailsDto, Long requesterId, Long donarId) {
 		try {
 			logger.info("Curser enter in to Save Request detaisl method inside service ");
-			Optional<MyUserDetails> byId = myUserDetailsRepository.findById(requesterId);
-			if (byId.isPresent()) {
-				requesterDetailsDto.setRequester(byId.get());
-				requesterDetailsDto.setRequiredDate(String.valueOf(LocalDate.now()));
-				RequesterDetails details = mapper.convertValue(requesterDetailsDto, RequesterDetails.class);
-				return requesterDetailsRepository.save(details).getRequestId() != null;
-			}
+
+			requesterDetailsDto.setRequesterId(requesterId);
+			requesterDetailsDto.setDonarId(donarId);
+			requesterDetailsDto.setRequiredDate(String.valueOf(LocalDate.now()));
+			RequesterDetails details = mapper.convertValue(requesterDetailsDto, RequesterDetails.class);
+			return requesterDetailsRepository.save(details).getRequestId() != null;
+
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("something went wrong while adding reqeuster details ", ex.getMessage());
@@ -77,6 +78,23 @@ public class RequesterDetailsServiceImpl implements RequesterDetailsService {
 			ex.printStackTrace();
 		}
 		return null;
+	}
+
+	// if donar want to see how can requests he got for blood donation approval
+	@Override
+	public List<RequesterDetailsDto> getAllRequestOfDonarForApproving(Long donarId) {
+		try {
+			List<RequesterDetails> byDonarId = requesterDetailsRepository.findByDonarId(donarId);
+			List<RequesterDetailsDto> donarDetails = new ArrayList<>();
+			byDonarId.stream().forEach(each -> {
+				donarDetails.add(mapper.convertValue(each, RequesterDetailsDto.class));
+			});
+			return donarDetails != null ? donarDetails : null;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return null;
+
 	}
 
 }
