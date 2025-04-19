@@ -1,7 +1,7 @@
 package com.capstone.demo.dto;
 
 public class UserDetailsDto {
-	
+
 	private Long userId;
 
 	private String firstName;
@@ -11,14 +11,16 @@ public class UserDetailsDto {
 	private String bloodGroup;
 
 	private String city;
-	
+
 	private String email;
 
 	private String phoneNumber;
 
 	private String userType; // DONOR, REQUESTOR, ADMIN
-	
+
 	private String passwordHash;
+
+	private String bloodStatusAddedOrNot;
 
 	public Long getUserId() {
 		return userId;
@@ -92,8 +94,16 @@ public class UserDetailsDto {
 		this.passwordHash = passwordHash;
 	}
 
+	public String getBloodStatusAddedOrNot() {
+		return bloodStatusAddedOrNot;
+	}
+
+	public void setBloodStatusAddedOrNot(String bloodStatusAddedOrNot) {
+		this.bloodStatusAddedOrNot = bloodStatusAddedOrNot;
+	}
+
 	public UserDetailsDto(Long userId, String firstName, String lastName, String bloodGroup, String city, String email,
-			String phoneNumber, String userType, String passwordHash) {
+			String phoneNumber, String userType, String passwordHash, String bloodStatusAddedOrNot) {
 		super();
 		this.userId = userId;
 		this.firstName = firstName;
@@ -104,9 +114,10 @@ public class UserDetailsDto {
 		this.phoneNumber = phoneNumber;
 		this.userType = userType;
 		this.passwordHash = passwordHash;
+		this.bloodStatusAddedOrNot = bloodStatusAddedOrNot;
 	}
-	
-	
-	
+
+	public UserDetailsDto() {
+	}
 
 }

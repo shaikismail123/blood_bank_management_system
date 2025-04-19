@@ -21,7 +21,7 @@ public class BloodDonation {
 
 	@ManyToOne
 	@JoinColumn(name = "donor_id", nullable = false)
-	private UserDetails donor;
+	private MyUserDetails donor;
 
 	private String patientId;
 
@@ -38,7 +38,7 @@ public class BloodDonation {
 
 	}
 
-	public BloodDonation(Long donationId, UserDetails donor, String patientId, LocalDateTime donationDateTime,
+	public BloodDonation(Long donationId, MyUserDetails donor, String patientId, LocalDateTime donationDateTime,
 			Double glucoseLevel, String notes, String status) {
 		super();
 		this.donationId = donationId;
@@ -58,11 +58,11 @@ public class BloodDonation {
 		this.donationId = donationId;
 	}
 
-	public UserDetails getDonor() {
+	public MyUserDetails getDonor() {
 		return donor;
 	}
 
-	public void setDonor(UserDetails donor) {
+	public void setDonor(MyUserDetails donor) {
 		this.donor = donor;
 	}
 

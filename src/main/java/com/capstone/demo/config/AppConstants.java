@@ -10,5 +10,10 @@ public interface AppConstants {
 	
 	public final static String STR = "";
 	
+	public final static String DELETE ="delete";
+	
+	public final static String UPDATE ="update";
+	
+	
 
 }

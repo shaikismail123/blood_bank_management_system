@@ -1,25 +1,13 @@
-package com.capstone.demo.entity;
+package com.capstone.demo.dto;
+
+import com.capstone.demo.entity.MyUserDetails;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.Email;
 
-@Entity
-@Table(name = "blood_request")
-public class RequesterDetails {
+public class RequesterDetailsDto {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long requestId;
 
-	@ManyToOne
-	@JoinColumn(name = "requester_id", nullable = false)
 	private MyUserDetails requester;
 
 	private String patientName;
@@ -33,7 +21,6 @@ public class RequesterDetails {
 
 	private String contactName;
 	private String contactNumber;
-	@Email
 	private String contactEmail;
 
 	@Column(length = 1000)
@@ -41,7 +28,7 @@ public class RequesterDetails {
 
 	private String status; // PENDING, APPROVED, REJECTED
 
-	public RequesterDetails() {
+	public RequesterDetailsDto() {
 
 	}
 
@@ -157,7 +144,7 @@ public class RequesterDetails {
 		this.status = status;
 	}
 
-	public RequesterDetails(Long requestId, MyUserDetails requester, String patientName, String requiredBloodGroup,
+	public RequesterDetailsDto(Long requestId, MyUserDetails requester, String patientName, String requiredBloodGroup,
 			String city, String doctorName, String hospitalName, String hospitalAddress, String requiredDate,
 			String contactName, String contactNumber, String contactEmail, String message, String status) {
 		super();
@@ -179,11 +166,11 @@ public class RequesterDetails {
 
 	@Override
 	public String toString() {
-		return "RequesterDetails [requestId=" + requestId + ", requester=" + requester + ", patientName=" + patientName
-				+ ", requiredBloodGroup=" + requiredBloodGroup + ", city=" + city + ", doctorName=" + doctorName
-				+ ", hospitalName=" + hospitalName + ", hospitalAddress=" + hospitalAddress + ", requiredDate="
-				+ requiredDate + ", contactName=" + contactName + ", contactNumber=" + contactNumber + ", contactEmail="
-				+ contactEmail + ", message=" + message + ", status=" + status + "]";
+		return "RequesterDetailsDto [requestId=" + requestId + ", requester=" + requester + ", patientName="
+				+ patientName + ", requiredBloodGroup=" + requiredBloodGroup + ", city=" + city + ", doctorName="
+				+ doctorName + ", hospitalName=" + hospitalName + ", hospitalAddress=" + hospitalAddress
+				+ ", requiredDate=" + requiredDate + ", contactName=" + contactName + ", contactNumber=" + contactNumber
+				+ ", contactEmail=" + contactEmail + ", message=" + message + ", status=" + status + "]";
 	}
 
 }
