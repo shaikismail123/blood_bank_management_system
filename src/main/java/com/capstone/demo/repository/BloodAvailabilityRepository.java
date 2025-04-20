@@ -13,7 +13,7 @@ public interface BloodAvailabilityRepository extends JpaRepository<BloodAvailabi
 	@Query(value = "select * from blood_availability where city=?1", nativeQuery = true)
 	List<BloodAvailability> getBloodDetailsBasedOnCity(String city);
 
-	@Query(value = "select * from blood_availability where blood_group=?1", nativeQuery = true)
+	@Query(value = "select sum(quantity) from blood_availability where blood_group=?1", nativeQuery = true)
 	List<BloodAvailability> getBloodDetailsBasedOnBloodGroup(String bloodGroup);
 
 	@Query(value = "select * from blood_availability where city=?1 and blood_group=?2", nativeQuery = true)

@@ -1,5 +1,6 @@
 package com.capstone.demo.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.capstone.demo.config.AppConstants;
 import com.capstone.demo.config.DefaultValues;
+import com.capstone.demo.entity.BloodAvailability;
 import com.capstone.demo.service.BloodAvailabilityServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -34,13 +36,28 @@ public class BloodAvailabilityController {
 	@Autowired
 	private BloodAvailabilityServiceImpl bloodAvailabilityServiceImpl;
 
-	// Get all blood details and divided based on blood group or city
+	// Get all blood details to view in front end
+	@GetMapping(value = "/getBloodDetails")
+	public ResponseEntity<List<BloodAvailability>> getBloodDetails() {
+		try {
+			logger.info("Blood group controller method invoce   ");
+			List<BloodAvailability> bloodDetails = bloodAvailabilityServiceImpl.getBloodDetails();
+			if (bloodDetails != null && bloodDetails.size() > 0) {
+				return ResponseEntity.status(HttpStatus.OK).body(bloodDetails);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+	}
 
+	// Get all blood details and divided based on blood group or city
 	@GetMapping(value = "/getBloodDetailsBasedOnCity/{city}")
-	public ResponseEntity<Map<String, Long>> getBloodDetailsBasedOnCity(@PathVariable String city) {
+	public ResponseEntity<List<BloodAvailability>> getBloodDetailsBasedOnCity(@PathVariable String city) {
 		try {
 			logger.info("Blood group controller method invoce   " + city);
-			Map<String, Long> bloodDetailsBasedOnCity = bloodAvailabilityServiceImpl.getBloodDetailsBasedOnCity(city);
+			List<BloodAvailability> bloodDetailsBasedOnCity = bloodAvailabilityServiceImpl
+					.getBloodDetailsBasedOnCity(city);
 			if (bloodDetailsBasedOnCity != null && bloodDetailsBasedOnCity.size() > 0) {
 				return ResponseEntity.status(HttpStatus.OK).body(bloodDetailsBasedOnCity);
 			}
@@ -52,13 +69,13 @@ public class BloodAvailabilityController {
 	}
 
 	@GetMapping(value = "/getBloodDetailsBasedOnBloodGroup/{blood}")
-	public ResponseEntity<Map<String, Long>> getBloodDetailsBasedOnBloodGroup(@PathVariable String blood) {
+	public ResponseEntity<List<BloodAvailability>> getBloodDetailsBasedOnBloodGroup(@PathVariable String blood) {
 		try {
 			logger.info("Blood group controller method invoce   " + blood);
-			Map<String, Long> bloodDetailsBasedOnCity = bloodAvailabilityServiceImpl
+			List<BloodAvailability> bloodDetailsBasedOngroup = bloodAvailabilityServiceImpl
 					.getBloodDetailsBasedOnBloodGroup(blood);
-			if (bloodDetailsBasedOnCity != null && bloodDetailsBasedOnCity.size() > 0) {
-				return ResponseEntity.status(HttpStatus.OK).body(bloodDetailsBasedOnCity);
+			if (bloodDetailsBasedOngroup != null && bloodDetailsBasedOngroup.size() > 0) {
+				return ResponseEntity.status(HttpStatus.OK).body(bloodDetailsBasedOngroup);
 			}
 
 		} catch (Exception ex) {
@@ -67,14 +84,15 @@ public class BloodAvailabilityController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 	}
 
-	@GetMapping(value = "/getBloodDetails")
-	public ResponseEntity<Map<String, Long>> getBloodDetails(@RequestParam Map<String, String> allParams) {
+	@GetMapping(value = "/getBloodDetailsBasedOnCityAndBloodGroup")
+	public ResponseEntity<List<BloodAvailability>> getBloodDetailsBasedOnCityAndBloodGroup(
+			@RequestParam Map<String, String> allParams) {
 		try {
 			logger.info("Blood group controller method invoce   " + mapper.writeValueAsString(allParams));
-			Map<String, Long> bloodDetailsBasedOnCity = bloodAvailabilityServiceImpl
-					.getBloodDetails(allParams.get("city"), allParams.get("blood"));
-			if (bloodDetailsBasedOnCity != null && bloodDetailsBasedOnCity.size() > 0) {
-				return ResponseEntity.status(HttpStatus.OK).body(bloodDetailsBasedOnCity);
+			List<BloodAvailability> bloodDetailsBasedOnCityAndGroup = bloodAvailabilityServiceImpl
+					.getBloodDetailsBasedOnCityAndBloodGroup(allParams.get("city"), allParams.get("blood"));
+			if (bloodDetailsBasedOnCityAndGroup != null && bloodDetailsBasedOnCityAndGroup.size() > 0) {
+				return ResponseEntity.status(HttpStatus.OK).body(bloodDetailsBasedOnCityAndGroup);
 			}
 
 		} catch (Exception ex) {
@@ -99,6 +117,4 @@ public class BloodAvailabilityController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 	}
 
-	
-	
 }

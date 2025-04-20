@@ -33,7 +33,6 @@ public class AdminOperationsController {
 	private AdminDetailsServiceImpl adminDetailsServiceImpl;
 
 	// save the admin end point
-
 	@PutMapping(value = "/saveAdminDetails")
 	public ResponseEntity<String> saveAdminDetails(@RequestBody AdminOperations adminOperations) {
 		try {
@@ -65,7 +64,6 @@ public class AdminOperationsController {
 	}
 
 	// get all the requester end point
-
 	@GetMapping(value = "/getAllRequesterForApproval")
 	public ResponseEntity<List<RequesterDetailsDto>> getAllRequesterForApproval() {
 		try {

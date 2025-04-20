@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.capstone.demo.dto.UserDetailsDto;
 import com.capstone.demo.entity.MyUserDetails;
+import com.capstone.demo.exception.UserNotFoundException;
 import com.capstone.demo.repository.MyUserDetailsRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -29,9 +30,7 @@ public class MyUserDetailsServiceImpl implements MyUserDetailsService {
 			if (userDetailsDto.getUserId() == null) {
 				userDetailsDto.setBloodStatusAddedOrNot("NO");
 			}
-
 			// here we are converting the values from DTO class to entity class
-
 			MyUserDetails details = mapper.convertValue(userDetailsDto, MyUserDetails.class);
 			// if the user will save it will return true other wise false
 			return userDetailsRepository.save(details).getUserId() != null;
@@ -46,12 +45,16 @@ public class MyUserDetailsServiceImpl implements MyUserDetailsService {
 		try {
 			logger.info("Cursor Enter in to getUserDetailsById inside service ====>  " + id);
 			Optional<MyUserDetails> byId = userDetailsRepository.findById(id);
+
 			if (byId.isPresent()) {
 				UserDetailsDto dto = mapper.convertValue(byId.get(), UserDetailsDto.class);
 				return dto;
+			} else {
+				throw new UserNotFoundException("User Not Found With this ID " + id);
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
+			logger.error("user not found exception ", ex.getMessage());
 		}
 		return null;
 	}

@@ -34,15 +34,13 @@ public class BloodAvailabilityServiceImpl implements BloodAvailabilityService {
 	private MyUserDetailsRepository myUserDetailsRepository;
 
 	@Override
-	public Map<String, Long> getBloodDetails(String city, String bloodGroup) {
+	public List<BloodAvailability> getBloodDetails() {
 		try {
-			logger.info("Blood Service getBloodDetails invoked ...!");
-			List<BloodAvailability> bloodDetails = bloodAvailabilityRepository.getBloodDetails(city, bloodGroup);
+			List<BloodAvailability> bloodDetails = bloodAvailabilityRepository.findAll();
 			logger.info("Data form DB : " + mapper.writeValueAsString(bloodDetails));
-			Map<String, Long> collect = bloodDetails.stream()
-					.collect(Collectors.groupingBy(BloodAvailability::getBloodGroup, Collectors.counting()));
-			logger.info("After stream the data is : " + mapper.writeValueAsString(collect));
-			return collect;
+			if (bloodDetails != null) {
+				return bloodDetails;
+			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -50,33 +48,41 @@ public class BloodAvailabilityServiceImpl implements BloodAvailabilityService {
 	}
 
 	@Override
-	public Map<String, Long> getBloodDetailsBasedOnCity(String city) {
+	public List<BloodAvailability> getBloodDetailsBasedOnCityAndBloodGroup(String city, String bloodGroup) {
+		try {
+			logger.info("Blood Service getBloodDetails invoked ...!");
+			List<BloodAvailability> bloodDetailsBasedOnCityAndGroup = bloodAvailabilityRepository.getBloodDetails(city,
+					bloodGroup);
+			logger.info("Data form DB : " + mapper.writeValueAsString(bloodDetailsBasedOnCityAndGroup));
+			return bloodDetailsBasedOnCityAndGroup != null ? bloodDetailsBasedOnCityAndGroup : null;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public List<BloodAvailability> getBloodDetailsBasedOnCity(String city) {
 		try {
 			logger.info("Blood Service getBloodDetailsBasedOnCity invoked ...!");
 			List<BloodAvailability> bloodDetails = bloodAvailabilityRepository.getBloodDetailsBasedOnCity(city);
 			logger.info("Data form DB : " + mapper.writeValueAsString(bloodDetails));
-			Map<String, Long> collect = bloodDetails.stream()
-					.collect(Collectors.groupingBy(BloodAvailability::getBloodGroup, Collectors.counting()));
-			logger.info("After stream the data is : " + mapper.writeValueAsString(collect));
-			return collect;
+			return bloodDetails != null ? bloodDetails : null;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-
 		return null;
 	}
 
 	@Override
-	public Map<String, Long> getBloodDetailsBasedOnBloodGroup(String bloodGroup) {
+	public List<BloodAvailability> getBloodDetailsBasedOnBloodGroup(String bloodGroup) {
 		try {
 			logger.info("Blood Service getBloodDetailsBasedOnBloodGroup invoked ...!");
+
 			List<BloodAvailability> bloodDetails = bloodAvailabilityRepository
 					.getBloodDetailsBasedOnBloodGroup(bloodGroup);
 			logger.info("Data form DB : " + mapper.writeValueAsString(bloodDetails));
-			Map<String, Long> collect = bloodDetails.stream()
-					.collect(Collectors.groupingBy(BloodAvailability::getBloodGroup, Collectors.counting()));
-			logger.info("After stream the data is : " + mapper.writeValueAsString(collect));
-			return collect;
+			return bloodDetails != null ? bloodDetails : null;
 
 		} catch (Exception ex) {
 			ex.printStackTrace();

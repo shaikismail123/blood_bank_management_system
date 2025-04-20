@@ -14,6 +14,8 @@ import com.capstone.demo.config.AppConstants;
 import com.capstone.demo.config.DefaultValues;
 import com.capstone.demo.dto.RequesterDetailsDto;
 import com.capstone.demo.entity.RequesterDetails;
+import com.capstone.demo.exception.RequesterNotFoundException;
+import com.capstone.demo.exception.UserNotFoundException;
 import com.capstone.demo.repository.MyUserDetailsRepository;
 import com.capstone.demo.repository.RequesterDetailsRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,7 +39,6 @@ public class RequesterDetailsServiceImpl implements RequesterDetailsService {
 	public boolean saveRequesterDetails(RequesterDetailsDto requesterDetailsDto, Long requesterId, Long donarId) {
 		try {
 			logger.info("Curser enter in to Save Request detaisl method inside service ");
-
 			requesterDetailsDto.setRequesterId(requesterId);
 			requesterDetailsDto.setDonarId(donarId);
 			requesterDetailsDto.setRequiredDate(String.valueOf(LocalDate.now()));
@@ -72,19 +73,24 @@ public class RequesterDetailsServiceImpl implements RequesterDetailsService {
 			Optional<RequesterDetails> byId = requesterDetailsRepository.findById(id);
 			if (byId.isPresent()) {
 				return byId.get();
+			} else {
+				throw new RequesterNotFoundException("Requster not found based on this id " + id);
 			}
-
 		} catch (Exception ex) {
 			ex.printStackTrace();
+			logger.error("Requester not found ", ex.getMessage());
 		}
 		return null;
 	}
 
-	// if donar want to see how can requests he got for blood donation approval
+	// if donar want to see how many requests he got for blood donation approval
 	@Override
 	public List<RequesterDetailsDto> getAllRequestOfDonarForApproving(Long donarId) {
 		try {
 			List<RequesterDetails> byDonarId = requesterDetailsRepository.findByDonarId(donarId);
+			if (byDonarId == null) {
+				throw new RequesterNotFoundException("Requsters not found to send the donar based on this id " + donarId);
+			}
 			List<RequesterDetailsDto> donarDetails = new ArrayList<>();
 			byDonarId.stream().forEach(each -> {
 				donarDetails.add(mapper.convertValue(each, RequesterDetailsDto.class));

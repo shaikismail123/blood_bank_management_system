@@ -1,17 +1,17 @@
 package com.capstone.demo.service;
 
-import java.util.Map;
+import java.util.List;
+
+import com.capstone.demo.entity.BloodAvailability;
 
 public interface BloodAvailabilityService {
 
-	public Map<String, Long> getBloodDetailsBasedOnCity(String city);
+	public List<BloodAvailability> getBloodDetails();
 
-	public Map<String, Long> getBloodDetailsBasedOnBloodGroup(String bloodGroup);
+	public List<BloodAvailability> getBloodDetailsBasedOnCity(String city);
 
-	public Map<String, Long> getBloodDetails(String city, String bloodGroup);
-	
-	
-	
-	
+	public List<BloodAvailability> getBloodDetailsBasedOnBloodGroup(String bloodGroup);
+
+	public List<BloodAvailability> getBloodDetailsBasedOnCityAndBloodGroup(String city, String bloodGroup);
 
 }
