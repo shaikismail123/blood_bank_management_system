@@ -8,11 +8,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 import lombok.Data;
 
 @Entity
 @Table(name = "blood_availability")
 @Data
+@Builder
 public class BloodAvailability {
 
 	@Id

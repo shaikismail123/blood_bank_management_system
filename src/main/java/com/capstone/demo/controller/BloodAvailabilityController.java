@@ -103,18 +103,18 @@ public class BloodAvailabilityController {
 
 	// based on blood group and city we need to increase the blood count
 
-	@GetMapping(value = "/addingBloodCountFromDonars")
-	public ResponseEntity<String> addingBloodCountFromDonars() {
-		try {
-			logger.info("Controller addingBloodCountFromDonars invoked ..!");
-			boolean addingBloodCountFromDonars = bloodAvailabilityServiceImpl.addingBloodCountFromDonars();
-			return addingBloodCountFromDonars
-					? ResponseEntity.status(HttpStatus.OK).body(defaultValues.getMessage().get(AppConstants.SUCCESS))
-					: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-	}
+//	@GetMapping(value = "/addingBloodCountFromDonars")
+//	public ResponseEntity<String> addingBloodCountFromDonars() {
+//		try {
+//			logger.info("Controller addingBloodCountFromDonars invoked ..!");
+//			boolean addingBloodCountFromDonars = bloodAvailabilityServiceImpl.addingBloodCountFromDonars();
+//			return addingBloodCountFromDonars
+//					? ResponseEntity.status(HttpStatus.OK).body(defaultValues.getMessage().get(AppConstants.SUCCESS))
+//					: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+//		} catch (Exception ex) {
+//			ex.printStackTrace();
+//		}
+//		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+//	}
 
 }

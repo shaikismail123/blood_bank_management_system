@@ -9,9 +9,10 @@ import com.capstone.demo.entity.RequesterDetails;
 
 public interface RequesterDetailsRepository extends JpaRepository<RequesterDetails, Long> {
 
-	@Query(value = "select * from blood_request where status='pending'", nativeQuery = true)
+	@Query(value = "select * from requester_details where status='pending'", nativeQuery = true)
 	public List<RequesterDetails> getAllRequesterForApproval();
 
-	public List<RequesterDetails> findByDonarId(Long donarId);
+	@Query(value = "select * from requester_details where donar_id=?1", nativeQuery = true)
+	public List<RequesterDetails> getDonarDetails(Long donarId);
 
 }

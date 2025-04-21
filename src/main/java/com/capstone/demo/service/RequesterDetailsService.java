@@ -7,7 +7,7 @@ import com.capstone.demo.entity.RequesterDetails;
 
 public interface RequesterDetailsService {
 
-	public boolean saveRequesterDetails(RequesterDetailsDto requesterDetailsDto, Long requeserId, Long donarId);
+	public boolean saveRequesterDetails(RequesterDetailsDto requesterDetailsDto);
 
 	public boolean deleteRequestById(Long id);
 

@@ -1,16 +1,20 @@
 package com.capstone.demo.dto;
 
+import com.capstone.demo.entity.MyUserDetails;
+
 import jakarta.persistence.Column;
 
 public class RequesterDetailsDto {
 
-	private Long requestId;
+	private Long id;
 
-//	private MyUserDetails requester;
+	private MyUserDetails requesterId;
 
-	private Long requesterId;
+	private MyUserDetails donarId;
 
-	private Long donarId;
+//	private Long requesterId;
+//
+//	private Long donarId;
 
 	private String patientName;
 
@@ -41,12 +45,12 @@ public class RequesterDetailsDto {
 
 	}
 
-	public RequesterDetailsDto(Long requestId, Long requesterId, Long donarId, String patientName,
+	public RequesterDetailsDto(Long id, MyUserDetails requesterId, MyUserDetails donarId, String patientName,
 			String requiredBloodGroup, String city, String doctorName, String hospitalName, String hospitalAddress,
 			String requiredDate, String contactName, String contactNumber, String contactEmail, String message,
 			String status) {
 		super();
-		this.requestId = requestId;
+		this.id = id;
 		this.requesterId = requesterId;
 		this.donarId = donarId;
 		this.patientName = patientName;
@@ -63,37 +67,27 @@ public class RequesterDetailsDto {
 		this.status = status;
 	}
 
-	@Override
-	public String toString() {
-		return "RequesterDetailsDto [city=" + city + ", contactEmail=" + contactEmail + ", contactName=" + contactName
-				+ ", contactNumber=" + contactNumber + ", doctorName=" + doctorName + ", donarId=" + donarId
-				+ ", hospitalAddress=" + hospitalAddress + ", hospitalName=" + hospitalName + ", message=" + message
-				+ ", patientName=" + patientName + ", requesterId=" + requesterId + ", requestId=" + requestId
-				+ ", requiredBloodGroup=" + requiredBloodGroup + ", requiredDate=" + requiredDate + ", status=" + status
-				+ "]";
+	public Long getId() {
+		return id;
 	}
 
-	public Long getRequestId() {
-		return requestId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
-	public void setRequestId(Long requestId) {
-		this.requestId = requestId;
-	}
-
-	public Long getRequesterId() {
+	public MyUserDetails getRequesterId() {
 		return requesterId;
 	}
 
-	public void setRequesterId(Long requesterId) {
+	public void setRequesterId(MyUserDetails requesterId) {
 		this.requesterId = requesterId;
 	}
 
-	public Long getDonarId() {
+	public MyUserDetails getDonarId() {
 		return donarId;
 	}
 
-	public void setDonarId(Long donarId) {
+	public void setDonarId(MyUserDetails donarId) {
 		this.donarId = donarId;
 	}
 
@@ -193,4 +187,15 @@ public class RequesterDetailsDto {
 		this.status = status;
 	}
 
+	@Override
+	public String toString() {
+		return "RequesterDetailsDto [id=" + id + ", requesterId=" + requesterId + ", donarId=" + donarId
+				+ ", patientName=" + patientName + ", requiredBloodGroup=" + requiredBloodGroup + ", city=" + city
+				+ ", doctorName=" + doctorName + ", hospitalName=" + hospitalName + ", hospitalAddress="
+				+ hospitalAddress + ", requiredDate=" + requiredDate + ", contactName=" + contactName
+				+ ", contactNumber=" + contactNumber + ", contactEmail=" + contactEmail + ", message=" + message
+				+ ", status=" + status + "]";
+	}
+
+	
 }

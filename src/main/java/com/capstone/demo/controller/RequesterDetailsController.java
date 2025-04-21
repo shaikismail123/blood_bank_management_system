@@ -37,13 +37,11 @@ public class RequesterDetailsController {
 	DefaultValues defaultValues;
 
 	@PostMapping(value = "/saveRequesterDetails")
-	public ResponseEntity<String> saveRequesterDetails(@RequestBody RequesterDetailsDto requesterDetailsDto,
-			@RequestParam Long requeserId, @RequestParam Long donarId) {
+	public ResponseEntity<String> saveRequesterDetails(@RequestBody RequesterDetailsDto requesterDetailsDto) {
 		try {
 			logger.info("Cusor enter in to save Requester details method inside "
 					+ mapper.writeValueAsString(requesterDetailsDto));
-			boolean saveRequesterDetails = requesterDetailsServiceImpl.saveRequesterDetails(requesterDetailsDto,
-					requeserId, donarId);
+			boolean saveRequesterDetails = requesterDetailsServiceImpl.saveRequesterDetails(requesterDetailsDto);
 			return saveRequesterDetails
 					? ResponseEntity.status(HttpStatus.OK).body(defaultValues.getMessage().get(AppConstants.SUCCESS))
 					: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);

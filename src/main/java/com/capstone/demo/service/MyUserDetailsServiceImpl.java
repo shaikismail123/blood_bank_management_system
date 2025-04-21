@@ -22,14 +22,19 @@ public class MyUserDetailsServiceImpl implements MyUserDetailsService {
 
 	@Autowired
 	private MyUserDetailsRepository userDetailsRepository;
+	
+	@Autowired
+	private BloodAvailabilityServiceImpl bloodAvailabilityServiceImpl;
 
 	@Override
 	public boolean insertUserDetails(UserDetailsDto userDetailsDto) {
 		try {
 			logger.info("Service method is invoking " + mapper.writeValueAsString(userDetailsDto));
-			if (userDetailsDto.getUserId() == null) {
-				userDetailsDto.setBloodStatusAddedOrNot("NO");
+			if(userDetailsDto.getUserType().equalsIgnoreCase("DONOR")) {
+				// This method is  for adding blood count form the donor
+				bloodAvailabilityServiceImpl.addingBloodCountFromDonars(userDetailsDto);
 			}
+			
 			// here we are converting the values from DTO class to entity class
 			MyUserDetails details = mapper.convertValue(userDetailsDto, MyUserDetails.class);
 			// if the user will save it will return true other wise false

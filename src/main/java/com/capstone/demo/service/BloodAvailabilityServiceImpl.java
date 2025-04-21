@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.capstone.demo.config.AppConstants;
 import com.capstone.demo.config.DefaultValues;
+import com.capstone.demo.dto.UserDetailsDto;
 import com.capstone.demo.entity.BloodAvailability;
 import com.capstone.demo.entity.MyUserDetails;
 import com.capstone.demo.repository.BloodAvailabilityRepository;
@@ -91,57 +92,27 @@ public class BloodAvailabilityServiceImpl implements BloodAvailabilityService {
 		return null;
 	}
 
-	public boolean addingBloodCountFromDonars() {
+	public void addingBloodCountFromDonars(UserDetailsDto userDetailsDto) {
 		try {
 			logger.info("Service addingBloodCountFromDonars invoked...!");
-
-			// Fetch existing blood group entries
-			List<BloodAvailability> allBloodGroupCounts = bloodAvailabilityRepository.findAll();
-			logger.info("All Blood Group Data from Blood Availability Table: "
-					+ mapper.writeValueAsString(allBloodGroupCounts));
-
-			// Fetch donors with blood group information
-			List<MyUserDetails> donarsToAddBloodCount = myUserDetailsRepository.getDonarsToAddBloodCount();
-
-			logger.info(
-					"Donor details from DB to add blood count: " + mapper.writeValueAsString(donarsToAddBloodCount));
-
-			// Count how many donors per blood group
-			Map<String, Long> basedOnBloodGroupCount = donarsToAddBloodCount.stream()
-					.collect(Collectors.groupingBy(MyUserDetails::getBloodGroup, Collectors.counting()));
-
-			for (Map.Entry<String, Long> entry : basedOnBloodGroupCount.entrySet()) {
-				String bloodGroup = entry.getKey();
-				Long quantityToAdd = entry.getValue();
-
-				Optional<BloodAvailability> existing = bloodAvailabilityRepository.findByBloodGroup(bloodGroup);
-
-				if (existing.isPresent()) {
-					BloodAvailability ba = existing.get();
-					ba.setQuantity(ba.getQuantity() + quantityToAdd.intValue());
-					bloodAvailabilityRepository.save(ba);
-					logger.info("Updated quantity for blood group " + bloodGroup + " by adding " + quantityToAdd);
-				} else {
-					BloodAvailability newEntry = new BloodAvailability();
-					newEntry.setBloodGroup(bloodGroup);
-					newEntry.setQuantity(quantityToAdd.intValue());
-					bloodAvailabilityRepository.save(newEntry);
-					logger.info("Inserted new blood group " + bloodGroup + " with quantity " + quantityToAdd);
-				}
+			Optional<BloodAvailability> byBloodGroupAndCity = bloodAvailabilityRepository
+					.findByBloodGroupAndCity(userDetailsDto.getBloodGroup(), userDetailsDto.getCity());
+			logger.info("Object form the DB: " + mapper.writeValueAsString(byBloodGroupAndCity));
+			if (byBloodGroupAndCity.isPresent()) {
+				byBloodGroupAndCity.get().setQuantity(byBloodGroupAndCity.get().getQuantity() + 1);
+				bloodAvailabilityRepository.save(byBloodGroupAndCity.get());
+			} else {
+				BloodAvailability bloodAvailability = new BloodAvailability();
+				bloodAvailability.setBloodGroup(userDetailsDto.getBloodGroup());
+				bloodAvailability.setCity(userDetailsDto.getCity());
+				bloodAvailability.setQuantity(1);
+				bloodAvailabilityRepository.save(bloodAvailability);
 			}
-
-			donarsToAddBloodCount.forEach(each -> {
-				each.setBloodStatusAddedOrNot("YES");
-			});
-
-			logger.info(defaultValues.getMessage().get(AppConstants.SUCCESS));
-			return myUserDetailsRepository.saveAll(donarsToAddBloodCount).get(0).getUserId() != null;
-
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("Exception while adding blood count: ", ex);
 		}
-		return false;
+
 	}
 
 }

@@ -43,8 +43,10 @@ public class UserDetailsController {
 		try {
 			logger.info("<==== Cusor enter in to userController method inside ====>  "
 					+ mapper.writeValueAsString(userDetailsDto));
+			
 			boolean insertUserDetails = userDetailsServiceImpl.insertUserDetails(userDetailsDto);
 			if (insertUserDetails) {
+				
 				return ResponseEntity.status(HttpStatus.OK).body(defaultValues.getMessage().get(AppConstants.SUCCESS));
 			}
 

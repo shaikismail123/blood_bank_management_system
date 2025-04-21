@@ -9,10 +9,7 @@ import com.capstone.demo.entity.MyUserDetails;
 
 public interface MyUserDetailsRepository extends JpaRepository<MyUserDetails, Long> {
 
-	@Query(value = "select * from users_details where user_type='DONAR' and blood_status_added_or_not='NO'", nativeQuery = true)
-	public List<MyUserDetails> getDonarsToAddBloodCount();
-
-	@Query(value="select * from users_details where user_type='DONAR'",nativeQuery= true)
+	@Query(value = "select * from users_details where user_type='DONAR'", nativeQuery = true)
 	public List<MyUserDetails> getAllDonarsForAdmin();
 
 }

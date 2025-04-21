@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.capstone.demo.config.AppConstants;
 import com.capstone.demo.config.DefaultValues;
 import com.capstone.demo.dto.RequesterDetailsDto;
+import com.capstone.demo.entity.MyUserDetails;
 import com.capstone.demo.entity.RequesterDetails;
 import com.capstone.demo.exception.RequesterNotFoundException;
 import com.capstone.demo.exception.UserNotFoundException;
@@ -36,15 +37,21 @@ public class RequesterDetailsServiceImpl implements RequesterDetailsService {
 	DefaultValues defaultValues;
 
 	@Override
-	public boolean saveRequesterDetails(RequesterDetailsDto requesterDetailsDto, Long requesterId, Long donarId) {
+	public boolean saveRequesterDetails(RequesterDetailsDto requesterDetailsDto) {
 		try {
 			logger.info("Curser enter in to Save Request detaisl method inside service ");
-			requesterDetailsDto.setRequesterId(requesterId);
-			requesterDetailsDto.setDonarId(donarId);
+
+			MyUserDetails byDonarId = myUserDetailsRepository.findById(requesterDetailsDto.getRequesterId().getUserId())
+					.get();
+
+			MyUserDetails byRequesterId = myUserDetailsRepository
+					.findById(requesterDetailsDto.getRequesterId().getUserId()).get();
+
+			requesterDetailsDto.setRequesterId(byRequesterId != null ? byRequesterId : null);
+			requesterDetailsDto.setDonarId(byDonarId != null ? byDonarId : null);
 			requesterDetailsDto.setRequiredDate(String.valueOf(LocalDate.now()));
 			RequesterDetails details = mapper.convertValue(requesterDetailsDto, RequesterDetails.class);
-			return requesterDetailsRepository.save(details).getRequestId() != null;
-
+			return requesterDetailsRepository.save(details).getId() != null;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("something went wrong while adding reqeuster details ", ex.getMessage());
@@ -87,9 +94,10 @@ public class RequesterDetailsServiceImpl implements RequesterDetailsService {
 	@Override
 	public List<RequesterDetailsDto> getAllRequestOfDonarForApproving(Long donarId) {
 		try {
-			List<RequesterDetails> byDonarId = requesterDetailsRepository.findByDonarId(donarId);
+			List<RequesterDetails> byDonarId = requesterDetailsRepository.getDonarDetails(donarId);
 			if (byDonarId == null) {
-				throw new RequesterNotFoundException("Requsters not found to send the donar based on this id " + donarId);
+				throw new RequesterNotFoundException(
+						"Requsters not found to send the donar based on this id " + donarId);
 			}
 			List<RequesterDetailsDto> donarDetails = new ArrayList<>();
 			byDonarId.stream().forEach(each -> {
