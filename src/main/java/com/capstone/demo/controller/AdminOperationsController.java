@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.capstone.demo.dto.RequesterDetailsDto;
 import com.capstone.demo.dto.UserDetailsDto;
 import com.capstone.demo.entity.AdminOperations;
-import com.capstone.demo.entity.RequesterDetails;
 import com.capstone.demo.service.AdminDetailsServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -32,12 +31,14 @@ public class AdminOperationsController {
 	@Autowired
 	private AdminDetailsServiceImpl adminDetailsServiceImpl;
 
-	// save the admin end point
-	@PutMapping(value = "/saveAdminDetails")
+	/**
+	 * This save end point will execute whenever the admin will approve the
+	 * requester blood request and here requester details status also change as approved based on admin 
+	 */
+	@PostMapping(value = "/saveAdminApprovedDetails")
 	public ResponseEntity<String> saveAdminDetails(@RequestBody AdminOperations adminOperations) {
 		try {
-			logger.info("cursor enter in to admin controller for saveAdminDetails "
-					+ mapper.writeValueAsString(adminOperations));
+			logger.info("cursor enter in to admin controller for saveAdminDetails ");
 			String saveAdminDetails = adminDetailsServiceImpl.saveAdminDetails(adminOperations);
 			return saveAdminDetails != null ? ResponseEntity.status(HttpStatus.OK).body(saveAdminDetails)
 					: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -48,7 +49,11 @@ public class AdminOperationsController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 	}
 
-	// get all the donars end point
+	/**
+	 * If admin want to see the all the donor's list then this end point will
+	 * execute
+	 */
+
 	@GetMapping(value = "/getAllDonars")
 	public ResponseEntity<List<UserDetailsDto>> getAllDonarsForAdmin() {
 		try {
@@ -63,7 +68,10 @@ public class AdminOperationsController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 	}
 
-	// get all the requester end point
+	/**
+	 * Admin will approve the requests for that this end point it will give all the
+	 * requests
+	 */
 	@GetMapping(value = "/getAllRequesterForApproval")
 	public ResponseEntity<List<RequesterDetailsDto>> getAllRequesterForApproval() {
 		try {
@@ -81,18 +89,9 @@ public class AdminOperationsController {
 	// get both requeste and donar end point
 
 	// delete the requester or donar end point
+	
 
 	// for updation perpose we can reuse the same userDetails methods only (status)
 
-//	@PutMapping(value="/updateRequsterDetaisByAdmin")
-//	public ResponseEntity<String> updateRequsterDetaisByAdmin(@RequestBody RequesterDetails reqeuserDetails){
-//		try {
-//			logger.info("cursor enter in to admin controller for updateRequsterDetaisByAdmin ");
-//			String updateRequsterDetaisByAdmin = adminDetailsServiceImpl.updateRequsterDetaisByAdmin(reqeuserDetails);
-//		}catch(Exception ex) {
-//			ex.printStackTrace();
-//		}
-//		return null;
-//	}
 
 }

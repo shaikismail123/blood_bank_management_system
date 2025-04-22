@@ -43,6 +43,7 @@ public class AdminDetailsServiceImpl implements AdminDetailsService {
 	public List<UserDetailsDto> getAllDonarsForAdmin() {
 		try {
 			List<MyUserDetails> allDonarsForAdmin = myUserDetailsRepository.getAllDonarsForAdmin();
+			logger.info("Data from DB : " + mapper.writeValueAsString(allDonarsForAdmin));
 			List<UserDetailsDto> listUserDto = new ArrayList<>();
 			allDonarsForAdmin.stream().forEach(each -> {
 				listUserDto.add(mapper.convertValue(each, UserDetailsDto.class));
@@ -59,6 +60,7 @@ public class AdminDetailsServiceImpl implements AdminDetailsService {
 	public List<RequesterDetailsDto> getAllRequesterForApproval() {
 		try {
 			List<RequesterDetails> allRequesterForApproval = requesterDetailsRepository.getAllRequesterForApproval();
+			logger.info("Data from DB : " + mapper.writeValueAsString(allRequesterForApproval));
 			List<RequesterDetailsDto> allReqeusts = new ArrayList<>();
 			allRequesterForApproval.stream().forEach(each -> {
 				allReqeusts.add(mapper.convertValue(each, RequesterDetailsDto.class));
@@ -71,18 +73,6 @@ public class AdminDetailsServiceImpl implements AdminDetailsService {
 		return null;
 
 	}
-
-//	@Override
-//	public String updateRequsterDetaisByAdmin(RequesterDetails reqeuserDetails) {
-//		try {
-//			return requesterDetailsRepository.save(reqeuserDetails) != null
-//					? defaultValues.getMessage().get(AppConstants.SUCCESS)
-//					: defaultValues.getMessage().get(AppConstants.FAIL);
-//		} catch (Exception ex) {
-//			ex.printStackTrace();
-//		}
-//		return defaultValues.getMessage().get(AppConstants.FAIL);
-//	}
 
 	@Override
 	public String saveAdminDetails(AdminOperations adminOperations) {

@@ -35,8 +35,6 @@ public class MyUserDetails {
 	@NotBlank
 	private String passwordHash;
 
-//	private String bloodStatusAddedOrNot;
-
 	public MyUserDetails() {
 
 	}

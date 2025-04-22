@@ -19,6 +19,7 @@ import com.capstone.demo.config.AppConstants;
 import com.capstone.demo.config.DefaultValues;
 import com.capstone.demo.dto.RequesterDetailsDto;
 import com.capstone.demo.entity.RequesterDetails;
+import com.capstone.demo.exception.RequesterNotFoundException;
 import com.capstone.demo.service.RequesterDetailsServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -52,7 +53,7 @@ public class RequesterDetailsController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 	}
 
-	@DeleteMapping(value = "/deleteReqeusterById")
+	@DeleteMapping(value = "/deleteReqeusterById/{id}")
 	public ResponseEntity<String> deleteReqeusterById(@PathVariable Long id) {
 		try {
 			logger.info("Cusor enter in to deleteReqeusterById controller " + id);
@@ -67,17 +68,15 @@ public class RequesterDetailsController {
 	}
 
 	@GetMapping(value = "/getReqeustDetailsById/{id}")
-	public ResponseEntity<String> getReqeustDetailsById(@PathVariable Long id) {
-		try {
+	public ResponseEntity<RequesterDetails> getReqeustDetailsById(@PathVariable Long id)
+			throws RequesterNotFoundException {
+	
 			logger.info("Cusor enter in to getReqeustDetailsById controller " + id);
 			RequesterDetails reqeustDetailsById = requesterDetailsServiceImpl.getReqeustDetailsById(id);
-			return reqeustDetailsById != null
-					? ResponseEntity.status(HttpStatus.OK).body(defaultValues.getMessage().get(AppConstants.SUCCESS))
+			return reqeustDetailsById != null ? ResponseEntity.status(HttpStatus.OK).body(reqeustDetailsById)
 					: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		
+		
 	}
 
 }

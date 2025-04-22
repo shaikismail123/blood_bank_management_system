@@ -53,7 +53,7 @@ public class RequesterDetails {
 	@Column(length = 1000)
 	private String message;
 
-	private String status; // PENDING, APPROVED, REJECTED
+	private String status; // PENDING, APPROVED, REJECTED  this is for admin approved or not 
 
 	public RequesterDetails() {
 

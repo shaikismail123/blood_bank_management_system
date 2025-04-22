@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.capstone.demo.config.AppConstants;
 import com.capstone.demo.config.DefaultValues;
 import com.capstone.demo.entity.BloodAvailability;
+import com.capstone.demo.exception.BloodNotAvailabilityException;
 import com.capstone.demo.service.BloodAvailabilityServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -53,19 +54,16 @@ public class BloodAvailabilityController {
 
 	// Get all blood details and divided based on blood group or city
 	@GetMapping(value = "/getBloodDetailsBasedOnCity/{city}")
-	public ResponseEntity<List<BloodAvailability>> getBloodDetailsBasedOnCity(@PathVariable String city) {
-		try {
-			logger.info("Blood group controller method invoce   " + city);
-			List<BloodAvailability> bloodDetailsBasedOnCity = bloodAvailabilityServiceImpl
-					.getBloodDetailsBasedOnCity(city);
-			if (bloodDetailsBasedOnCity != null && bloodDetailsBasedOnCity.size() > 0) {
-				return ResponseEntity.status(HttpStatus.OK).body(bloodDetailsBasedOnCity);
-			}
+	public ResponseEntity<List<BloodAvailability>> getBloodDetailsBasedOnCity(@PathVariable String city)
+			throws BloodNotAvailabilityException {
 
-		} catch (Exception ex) {
-			ex.printStackTrace();
+		logger.info("Blood group controller method invoce   " + city);
+		List<BloodAvailability> bloodDetailsBasedOnCity = bloodAvailabilityServiceImpl.getBloodDetailsBasedOnCity(city);
+		if (bloodDetailsBasedOnCity != null && bloodDetailsBasedOnCity.size() > 0) {
+			return ResponseEntity.status(HttpStatus.OK).body(bloodDetailsBasedOnCity);
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+
 	}
 
 	@GetMapping(value = "/getBloodDetailsBasedOnBloodGroup/{blood}")

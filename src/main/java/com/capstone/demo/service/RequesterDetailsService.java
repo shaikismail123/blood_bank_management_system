@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.capstone.demo.dto.RequesterDetailsDto;
 import com.capstone.demo.entity.RequesterDetails;
+import com.capstone.demo.exception.RequesterNotFoundException;
 
 public interface RequesterDetailsService {
 
@@ -11,7 +12,7 @@ public interface RequesterDetailsService {
 
 	public boolean deleteRequestById(Long id);
 
-	public RequesterDetails getReqeustDetailsById(Long id);
+	public RequesterDetails getReqeustDetailsById(Long id) throws RequesterNotFoundException;
 
 	public List<RequesterDetailsDto> getAllRequestOfDonarForApproving(Long donarId);
 

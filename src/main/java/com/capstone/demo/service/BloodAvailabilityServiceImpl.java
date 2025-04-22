@@ -15,6 +15,7 @@ import com.capstone.demo.config.DefaultValues;
 import com.capstone.demo.dto.UserDetailsDto;
 import com.capstone.demo.entity.BloodAvailability;
 import com.capstone.demo.entity.MyUserDetails;
+import com.capstone.demo.exception.BloodNotAvailabilityException;
 import com.capstone.demo.repository.BloodAvailabilityRepository;
 import com.capstone.demo.repository.MyUserDetailsRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,58 +50,60 @@ public class BloodAvailabilityServiceImpl implements BloodAvailabilityService {
 	}
 
 	@Override
-	public List<BloodAvailability> getBloodDetailsBasedOnCityAndBloodGroup(String city, String bloodGroup) {
-		try {
-			logger.info("Blood Service getBloodDetails invoked ...!");
-			List<BloodAvailability> bloodDetailsBasedOnCityAndGroup = bloodAvailabilityRepository.getBloodDetails(city,
-					bloodGroup);
-			logger.info("Data form DB : " + mapper.writeValueAsString(bloodDetailsBasedOnCityAndGroup));
+	public List<BloodAvailability> getBloodDetailsBasedOnCityAndBloodGroup(String city, String bloodGroup)
+			throws BloodNotAvailabilityException {
+
+		logger.info("Blood Service getBloodDetails invoked ...!");
+		List<BloodAvailability> bloodDetailsBasedOnCityAndGroup = bloodAvailabilityRepository.getBloodDetails(city,
+				bloodGroup);
+
+		if (bloodDetailsBasedOnCityAndGroup.size() > 0) {
 			return bloodDetailsBasedOnCityAndGroup != null ? bloodDetailsBasedOnCityAndGroup : null;
-		} catch (Exception ex) {
-			ex.printStackTrace();
+		} else {
+			throw new BloodNotAvailabilityException(
+					"Blood not available based on this city" + city + " and blood group  " + bloodGroup);
 		}
-		return null;
+
 	}
 
 	@Override
-	public List<BloodAvailability> getBloodDetailsBasedOnCity(String city) {
-		try {
-			logger.info("Blood Service getBloodDetailsBasedOnCity invoked ...!");
-			List<BloodAvailability> bloodDetails = bloodAvailabilityRepository.getBloodDetailsBasedOnCity(city);
-			logger.info("Data form DB : " + mapper.writeValueAsString(bloodDetails));
+	public List<BloodAvailability> getBloodDetailsBasedOnCity(String city) throws BloodNotAvailabilityException {
+
+		logger.info("Blood Service getBloodDetailsBasedOnCity invoked ...!");
+		List<BloodAvailability> bloodDetails = bloodAvailabilityRepository.getBloodDetailsBasedOnCity(city);
+		if (bloodDetails.size() > 0) {
 			return bloodDetails != null ? bloodDetails : null;
-		} catch (Exception ex) {
-			ex.printStackTrace();
+		} else {
+			throw new BloodNotAvailabilityException("Blood not available based on this city " + city);
 		}
-		return null;
+
 	}
 
 	@Override
-	public List<BloodAvailability> getBloodDetailsBasedOnBloodGroup(String bloodGroup) {
-		try {
-			logger.info("Blood Service getBloodDetailsBasedOnBloodGroup invoked ...!");
+	public List<BloodAvailability> getBloodDetailsBasedOnBloodGroup(String bloodGroup)
+			throws BloodNotAvailabilityException {
 
-			List<BloodAvailability> bloodDetails = bloodAvailabilityRepository
-					.getBloodDetailsBasedOnBloodGroup(bloodGroup);
-			logger.info("Data form DB : " + mapper.writeValueAsString(bloodDetails));
+		logger.info("Blood Service getBloodDetailsBasedOnBloodGroup invoked ...!");
+
+		List<BloodAvailability> bloodDetails = bloodAvailabilityRepository.findByBloodGroup(bloodGroup);
+
+		if (bloodDetails.size() > 0) {
 			return bloodDetails != null ? bloodDetails : null;
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
+		} else {
+			throw new BloodNotAvailabilityException("Blood not available based on this blood group " + bloodGroup);
 		}
 
-		return null;
 	}
 
 	public void addingBloodCountFromDonars(UserDetailsDto userDetailsDto) {
 		try {
 			logger.info("Service addingBloodCountFromDonars invoked...!");
-			Optional<BloodAvailability> byBloodGroupAndCity = bloodAvailabilityRepository
+			BloodAvailability byBloodGroupAndCity = bloodAvailabilityRepository
 					.findByBloodGroupAndCity(userDetailsDto.getBloodGroup(), userDetailsDto.getCity());
 			logger.info("Object form the DB: " + mapper.writeValueAsString(byBloodGroupAndCity));
-			if (byBloodGroupAndCity.isPresent()) {
-				byBloodGroupAndCity.get().setQuantity(byBloodGroupAndCity.get().getQuantity() + 1);
-				bloodAvailabilityRepository.save(byBloodGroupAndCity.get());
+			if (byBloodGroupAndCity != null) {
+				byBloodGroupAndCity.setQuantity(byBloodGroupAndCity.getQuantity() + 1);
+				bloodAvailabilityRepository.save(byBloodGroupAndCity);
 			} else {
 				BloodAvailability bloodAvailability = new BloodAvailability();
 				bloodAvailability.setBloodGroup(userDetailsDto.getBloodGroup());

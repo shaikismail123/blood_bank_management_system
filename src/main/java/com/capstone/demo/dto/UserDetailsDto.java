@@ -20,7 +20,22 @@ public class UserDetailsDto {
 
 	private String passwordHash;
 
-	private String bloodStatusAddedOrNot;
+	public UserDetailsDto() {
+	}
+
+	public UserDetailsDto(Long userId, String firstName, String lastName, String bloodGroup, String city, String email,
+			String phoneNumber, String userType, String passwordHash) {
+		super();
+		this.userId = userId;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.bloodGroup = bloodGroup;
+		this.city = city;
+		this.email = email;
+		this.phoneNumber = phoneNumber;
+		this.userType = userType;
+		this.passwordHash = passwordHash;
+	}
 
 	public Long getUserId() {
 		return userId;
@@ -94,30 +109,11 @@ public class UserDetailsDto {
 		this.passwordHash = passwordHash;
 	}
 
-	public String getBloodStatusAddedOrNot() {
-		return bloodStatusAddedOrNot;
-	}
-
-	public void setBloodStatusAddedOrNot(String bloodStatusAddedOrNot) {
-		this.bloodStatusAddedOrNot = bloodStatusAddedOrNot;
-	}
-
-	public UserDetailsDto(Long userId, String firstName, String lastName, String bloodGroup, String city, String email,
-			String phoneNumber, String userType, String passwordHash, String bloodStatusAddedOrNot) {
-		super();
-		this.userId = userId;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.bloodGroup = bloodGroup;
-		this.city = city;
-		this.email = email;
-		this.phoneNumber = phoneNumber;
-		this.userType = userType;
-		this.passwordHash = passwordHash;
-		this.bloodStatusAddedOrNot = bloodStatusAddedOrNot;
-	}
-
-	public UserDetailsDto() {
+	@Override
+	public String toString() {
+		return "UserDetailsDto [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName
+				+ ", bloodGroup=" + bloodGroup + ", city=" + city + ", email=" + email + ", phoneNumber=" + phoneNumber
+				+ ", userType=" + userType + ", passwordHash=" + passwordHash + "]";
 	}
 
 }

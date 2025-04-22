@@ -19,17 +19,13 @@ public class DonarDetails {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
 
-//	@ManyToOne
-//	@JoinColumn(name = "requster_id", nullable = false)
-//	private MyUserDetails requesterId;	
-//
-//	@ManyToOne
-//	@JoinColumn(name = "donor_id", nullable = false)
-//	private MyUserDetails donarId;	
+	@ManyToOne
+	@JoinColumn(name = "requester_id", nullable = false)
+	private MyUserDetails requesterId;
 
-	private Long requsterId;
-
-	private Long donarId;
+	@ManyToOne
+	@JoinColumn(name = "donar_id", nullable = false)
+	private MyUserDetails donarId;
 
 	private String patientId; // requester Id and patient id are same
 
@@ -40,7 +36,24 @@ public class DonarDetails {
 	@Column(length = 1000)
 	private String notes;
 
-	private String status; // PENDING, APPROVED, REJECTED
+	private String donarApprovedstatus; // PENDING, APPROVED, REJECTED this status for donor approved or not
+
+	public DonarDetails() {
+
+	}
+
+	public DonarDetails(Long id, MyUserDetails requesterId, MyUserDetails donarId, String patientId,
+			LocalDateTime donationDateTime, Double glucoseLevel, String notes, String donarApprovedstatus) {
+		super();
+		Id = id;
+		this.requesterId = requesterId;
+		this.donarId = donarId;
+		this.patientId = patientId;
+		this.donationDateTime = donationDateTime;
+		this.glucoseLevel = glucoseLevel;
+		this.notes = notes;
+		this.donarApprovedstatus = donarApprovedstatus;
+	}
 
 	public Long getId() {
 		return Id;
@@ -50,19 +63,19 @@ public class DonarDetails {
 		Id = id;
 	}
 
-	public Long getRequsterId() {
-		return requsterId;
+	public MyUserDetails getRequesterId() {
+		return requesterId;
 	}
 
-	public void setRequsterId(Long requsterId) {
-		this.requsterId = requsterId;
+	public void setRequesterId(MyUserDetails requesterId) {
+		this.requesterId = requesterId;
 	}
 
-	public Long getDonarId() {
+	public MyUserDetails getDonarId() {
 		return donarId;
 	}
 
-	public void setDonarId(Long donarId) {
+	public void setDonarId(MyUserDetails donarId) {
 		this.donarId = donarId;
 	}
 
@@ -98,36 +111,19 @@ public class DonarDetails {
 		this.notes = notes;
 	}
 
-	public String getStatus() {
-		return status;
+	public String getDonarApprovedstatus() {
+		return donarApprovedstatus;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	public DonarDetails(Long id, Long requsterId, Long donarId, String patientId, LocalDateTime donationDateTime,
-			Double glucoseLevel, String notes, String status) {
-		super();
-		Id = id;
-		this.requsterId = requsterId;
-		this.donarId = donarId;
-		this.patientId = patientId;
-		this.donationDateTime = donationDateTime;
-		this.glucoseLevel = glucoseLevel;
-		this.notes = notes;
-		this.status = status;
-	}
-
-	public DonarDetails() {
-		super();
+	public void setDonarApprovedstatus(String donarApprovedstatus) {
+		this.donarApprovedstatus = donarApprovedstatus;
 	}
 
 	@Override
 	public String toString() {
-		return "DonarDetails [Id=" + Id + ", requsterId=" + requsterId + ", donarId=" + donarId + ", patientId="
+		return "DonarDetails [Id=" + Id + ", requesterId=" + requesterId + ", donarId=" + donarId + ", patientId="
 				+ patientId + ", donationDateTime=" + donationDateTime + ", glucoseLevel=" + glucoseLevel + ", notes="
-				+ notes + ", status=" + status + "]";
+				+ notes + ", donarApprovedstatus=" + donarApprovedstatus + "]";
 	}
 
 }

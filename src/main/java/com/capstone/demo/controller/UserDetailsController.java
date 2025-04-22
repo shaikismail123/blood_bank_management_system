@@ -19,6 +19,7 @@ import com.capstone.demo.config.DefaultValues;
 import com.capstone.demo.dto.UserDetailsDto;
 import com.capstone.demo.entity.MyUserDetails;
 import com.capstone.demo.entity.RequesterDetails;
+import com.capstone.demo.exception.UserNotFoundException;
 import com.capstone.demo.service.MyUserDetailsServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -43,10 +44,10 @@ public class UserDetailsController {
 		try {
 			logger.info("<==== Cusor enter in to userController method inside ====>  "
 					+ mapper.writeValueAsString(userDetailsDto));
-			
+
 			boolean insertUserDetails = userDetailsServiceImpl.insertUserDetails(userDetailsDto);
 			if (insertUserDetails) {
-				
+
 				return ResponseEntity.status(HttpStatus.OK).body(defaultValues.getMessage().get(AppConstants.SUCCESS));
 			}
 
@@ -57,16 +58,11 @@ public class UserDetailsController {
 	}
 
 	@GetMapping(value = "/getUserDetailsById/{id}")
-	public ResponseEntity<UserDetailsDto> getUserDetailsById(@PathVariable Long id) {
-		try {
-			logger.info("Cusor enter in to getUserDetailsById controller " + id);
-			UserDetailsDto userDetails = userDetailsServiceImpl.userDetailsById(id);
-			return userDetails != null ? ResponseEntity.status(HttpStatus.OK).body(userDetails)
-					: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-		} catch (Exception ex) {
-			ex.printStackTrace();
+	public ResponseEntity<UserDetailsDto> getUserDetailsById(@PathVariable Long id) throws UserNotFoundException {
+		logger.info("Cusor enter in to getUserDetailsById controller " + id);
+		UserDetailsDto userDetails = userDetailsServiceImpl.userDetailsById(id);
+		return userDetails != null ? ResponseEntity.status(HttpStatus.OK).body(userDetails)
+				: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		}
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-	}
 
 }

@@ -22,7 +22,7 @@ public class MyUserDetailsServiceImpl implements MyUserDetailsService {
 
 	@Autowired
 	private MyUserDetailsRepository userDetailsRepository;
-	
+
 	@Autowired
 	private BloodAvailabilityServiceImpl bloodAvailabilityServiceImpl;
 
@@ -30,11 +30,11 @@ public class MyUserDetailsServiceImpl implements MyUserDetailsService {
 	public boolean insertUserDetails(UserDetailsDto userDetailsDto) {
 		try {
 			logger.info("Service method is invoking " + mapper.writeValueAsString(userDetailsDto));
-			if(userDetailsDto.getUserType().equalsIgnoreCase("DONOR")) {
-				// This method is  for adding blood count form the donor
+			if (userDetailsDto.getUserType().equalsIgnoreCase("DONAR")) {
+				logger.info("<================= blood packets ading method is invoke  ============>");
+				// This method is for adding blood count form the donor
 				bloodAvailabilityServiceImpl.addingBloodCountFromDonars(userDetailsDto);
 			}
-			
 			// here we are converting the values from DTO class to entity class
 			MyUserDetails details = mapper.convertValue(userDetailsDto, MyUserDetails.class);
 			// if the user will save it will return true other wise false
@@ -46,34 +46,29 @@ public class MyUserDetailsServiceImpl implements MyUserDetailsService {
 	}
 
 	@Override
-	public UserDetailsDto userDetailsById(Long id) {
-		try {
-			logger.info("Cursor Enter in to getUserDetailsById inside service ====>  " + id);
-			Optional<MyUserDetails> byId = userDetailsRepository.findById(id);
+	public UserDetailsDto userDetailsById(Long id) throws UserNotFoundException {
+		logger.info("Cursor Enter in to getUserDetailsById inside service ====>  " + id);
+		Optional<MyUserDetails> byId = userDetailsRepository.findById(id);
 
-			if (byId.isPresent()) {
-				UserDetailsDto dto = mapper.convertValue(byId.get(), UserDetailsDto.class);
-				return dto;
-			} else {
-				throw new UserNotFoundException("User Not Found With this ID " + id);
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			logger.error("user not found exception ", ex.getMessage());
+		if (byId.isPresent()) {
+			UserDetailsDto dto = mapper.convertValue(byId.get(), UserDetailsDto.class);
+			return dto;
+		} else {
+			throw new UserNotFoundException("User Not Found With this ID " + id);
 		}
-		return null;
 	}
 
 	@Override
-	public boolean deleteDonerDetails(Long id) {
-		try {
-			logger.info("Cursor Enter in to Delete Reqeust by id method inside service ====>  " + id);
+	public boolean deleteDonerDetails(Long id) throws UserNotFoundException {
+		logger.info("Cursor Enter in to Delete Reqeust by id method inside service ====>  " + id);
+		Optional<MyUserDetails> byId = userDetailsRepository.findById(id);
+		if (byId.isPresent()) {
 			userDetailsRepository.deleteById(id);
 			return true;
-		} catch (Exception ex) {
-			ex.printStackTrace();
+		} else {
+			throw new UserNotFoundException("This Donar id " + id + " is not available please check once...! ");
 		}
-		return false;
+
 	}
 
 }

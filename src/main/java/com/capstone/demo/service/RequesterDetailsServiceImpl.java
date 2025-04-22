@@ -17,6 +17,7 @@ import com.capstone.demo.entity.MyUserDetails;
 import com.capstone.demo.entity.RequesterDetails;
 import com.capstone.demo.exception.RequesterNotFoundException;
 import com.capstone.demo.exception.UserNotFoundException;
+import com.capstone.demo.repository.AdminDetailsRepository;
 import com.capstone.demo.repository.MyUserDetailsRepository;
 import com.capstone.demo.repository.RequesterDetailsRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,6 +35,9 @@ public class RequesterDetailsServiceImpl implements RequesterDetailsService {
 	private MyUserDetailsRepository myUserDetailsRepository;
 
 	@Autowired
+	private AdminDetailsRepository adminDetailsRepository;
+
+	@Autowired
 	DefaultValues defaultValues;
 
 	@Override
@@ -41,7 +45,7 @@ public class RequesterDetailsServiceImpl implements RequesterDetailsService {
 		try {
 			logger.info("Curser enter in to Save Request detaisl method inside service ");
 
-			MyUserDetails byDonarId = myUserDetailsRepository.findById(requesterDetailsDto.getRequesterId().getUserId())
+			MyUserDetails byDonarId = myUserDetailsRepository.findById(requesterDetailsDto.getDonarId().getUserId())
 					.get();
 
 			MyUserDetails byRequesterId = myUserDetailsRepository
@@ -60,10 +64,15 @@ public class RequesterDetailsServiceImpl implements RequesterDetailsService {
 		return false;
 	}
 
+	/***
+	 * In this method we first delete the parent dependent row inside the Admin DB
+	 * and delete the parent in requester
+	 */
 	@Override
 	public boolean deleteRequestById(Long id) {
 		try {
 			logger.info("Cursor Enter in to Delete Reqeust by id method inside service ====>  " + id);
+			adminDetailsRepository.deleteTheRequesterIdFromAdmin(id);
 			requesterDetailsRepository.deleteById(id);
 			logger.info(defaultValues.getMessage().get(AppConstants.DELETE));
 			return true;
@@ -74,8 +83,8 @@ public class RequesterDetailsServiceImpl implements RequesterDetailsService {
 	}
 
 	@Override
-	public RequesterDetails getReqeustDetailsById(Long id) {
-		try {
+	public RequesterDetails getReqeustDetailsById(Long id) throws RequesterNotFoundException {
+	
 			logger.info("Cursor Enter in to DgetReqeustDetailsById inside service ====>  " + id);
 			Optional<RequesterDetails> byId = requesterDetailsRepository.findById(id);
 			if (byId.isPresent()) {
@@ -83,11 +92,8 @@ public class RequesterDetailsServiceImpl implements RequesterDetailsService {
 			} else {
 				throw new RequesterNotFoundException("Requster not found based on this id " + id);
 			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			logger.error("Requester not found ", ex.getMessage());
-		}
-		return null;
+		
+	
 	}
 
 	// if donar want to see how many requests he got for blood donation approval
@@ -95,6 +101,7 @@ public class RequesterDetailsServiceImpl implements RequesterDetailsService {
 	public List<RequesterDetailsDto> getAllRequestOfDonarForApproving(Long donarId) {
 		try {
 			List<RequesterDetails> byDonarId = requesterDetailsRepository.getDonarDetails(donarId);
+			logger.info("Requester Data form DB based on Donar Id : " + mapper.writeValueAsString(byDonarId));
 			if (byDonarId == null) {
 				throw new RequesterNotFoundException(
 						"Requsters not found to send the donar based on this id " + donarId);

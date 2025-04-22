@@ -5,11 +5,13 @@ import java.time.LocalDate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -28,7 +30,8 @@ public class AdminOperations {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long adminId;
 
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "requester_id", nullable = false, referencedColumnName = "id")
 	private RequesterDetails requesterDetails;
 
 	private String approvalStatus;
@@ -40,9 +43,5 @@ public class AdminOperations {
 	@CreationTimestamp
 	@Column(name = "insertable_date", updatable = false)
 	private LocalDate insertableDate;
-	
-	
-	
-	
 
 }
