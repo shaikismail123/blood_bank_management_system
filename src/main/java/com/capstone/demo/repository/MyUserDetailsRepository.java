@@ -12,4 +12,6 @@ public interface MyUserDetailsRepository extends JpaRepository<MyUserDetails, Lo
 	@Query(value = "select * from my_users_details where user_type='Donar'", nativeQuery = true)
 	public List<MyUserDetails> getAllDonarsForAdmin();
 
+	public MyUserDetails findByEmail(String username);
+
 }

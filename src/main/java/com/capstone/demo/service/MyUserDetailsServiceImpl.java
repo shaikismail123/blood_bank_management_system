@@ -1,10 +1,16 @@
 package com.capstone.demo.service;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.capstone.demo.dto.UserDetailsDto;
@@ -14,11 +20,14 @@ import com.capstone.demo.repository.MyUserDetailsRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
-public class MyUserDetailsServiceImpl implements MyUserDetailsService {
+public class MyUserDetailsServiceImpl implements MyUserDetailsService, UserDetailsService {
 
 	private Logger logger = LoggerFactory.getLogger(MyUserDetailsServiceImpl.class);
 
 	private ObjectMapper mapper = new ObjectMapper();
+
+	@Autowired
+	private PasswordEncoder pwdEncoder;
 
 	@Autowired
 	private MyUserDetailsRepository userDetailsRepository;
@@ -30,6 +39,8 @@ public class MyUserDetailsServiceImpl implements MyUserDetailsService {
 	public boolean insertUserDetails(UserDetailsDto userDetailsDto) {
 		try {
 			logger.info("Service method is invoking " + mapper.writeValueAsString(userDetailsDto));
+			String encodedPwd = pwdEncoder.encode(userDetailsDto.getPasswordHash());
+			userDetailsDto.setPasswordHash(encodedPwd);
 			if (userDetailsDto.getUserType().equalsIgnoreCase("DONAR")) {
 				logger.info("<================= blood packets ading method is invoke  ============>");
 				// This method is for adding blood count form the donor
@@ -68,6 +79,15 @@ public class MyUserDetailsServiceImpl implements MyUserDetailsService {
 		} else {
 			throw new UserNotFoundException("This Donar id " + id + " is not available please check once...! ");
 		}
+
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+		MyUserDetails c = userDetailsRepository.findByEmail(username);
+
+		return new User(c.getEmail(), c.getPasswordHash(), Collections.emptyList());
 
 	}
 

@@ -14,6 +14,8 @@ public interface AppConstants {
 	
 	public final static String UPDATE ="update";
 	
+	public final static String INVALID ="invalid";
+	
 	
 
 }
