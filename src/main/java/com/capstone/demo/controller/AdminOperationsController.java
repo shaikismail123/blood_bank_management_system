@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.capstone.demo.dto.RequesterDetailsDto;
 import com.capstone.demo.dto.UserDetailsDto;
 import com.capstone.demo.entity.AdminOperations;
+import com.capstone.demo.exception.RequesterNotFoundException;
 import com.capstone.demo.service.AdminDetailsServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -33,7 +34,8 @@ public class AdminOperationsController {
 
 	/**
 	 * This save end point will execute whenever the admin will approve the
-	 * requester blood request and here requester details status also change as approved based on admin 
+	 * requester blood request and here requester details status also change as
+	 * approved based on admin
 	 */
 	@PostMapping(value = "/saveAdminApprovedDetails")
 	public ResponseEntity<String> saveAdminDetails(@RequestBody AdminOperations adminOperations) {
@@ -52,46 +54,38 @@ public class AdminOperationsController {
 	/**
 	 * If admin want to see the all the donor's list then this end point will
 	 * execute
+	 * 
+	 * @throws RequesterNotFoundException
 	 */
 
 	@GetMapping(value = "/getAllDonars")
-	public ResponseEntity<List<UserDetailsDto>> getAllDonarsForAdmin() {
-		try {
-			logger.info("cursor enter in to admin controller for get all donar details ");
-			List<UserDetailsDto> allDonarsForAdmin = adminDetailsServiceImpl.getAllDonarsForAdmin();
-			return allDonarsForAdmin != null ? ResponseEntity.status(HttpStatus.OK).body(allDonarsForAdmin)
-					: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+	public ResponseEntity<List<UserDetailsDto>> getAllDonarsForAdmin() throws RequesterNotFoundException {
+		logger.info("cursor enter in to admin controller for get all donar details ");
+		List<UserDetailsDto> allDonarsForAdmin = adminDetailsServiceImpl.getAllDonarsForAdmin();
+		return allDonarsForAdmin != null ? ResponseEntity.status(HttpStatus.OK).body(allDonarsForAdmin)
+				: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 	}
 
 	/**
 	 * Admin will approve the requests for that this end point it will give all the
 	 * requests
+	 * 
+	 * @throws RequesterNotFoundException
 	 */
 	@GetMapping(value = "/getAllRequesterForApproval")
-	public ResponseEntity<List<RequesterDetailsDto>> getAllRequesterForApproval() {
-		try {
-			logger.info("cursor enter in to admin controller for get all reqeuster details ");
-			List<RequesterDetailsDto> allRequesterForApproval = adminDetailsServiceImpl.getAllRequesterForApproval();
-			return allRequesterForApproval != null ? ResponseEntity.status(HttpStatus.OK).body(allRequesterForApproval)
-					: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+	public ResponseEntity<List<RequesterDetailsDto>> getAllRequesterForApproval() throws RequesterNotFoundException {
+		logger.info("cursor enter in to admin controller for get all reqeuster details ");
+		List<RequesterDetailsDto> allRequesterForApproval = adminDetailsServiceImpl.getAllRequesterForApproval();
+		return allRequesterForApproval != null ? ResponseEntity.status(HttpStatus.OK).body(allRequesterForApproval)
+				: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 	}
 
 	// get both requeste and donar end point
 
 	// delete the requester or donar end point
-	
 
 	// for updation perpose we can reuse the same userDetails methods only (status)
-
 
 }

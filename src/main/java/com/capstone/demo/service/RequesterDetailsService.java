@@ -10,10 +10,10 @@ public interface RequesterDetailsService {
 
 	public boolean saveRequesterDetails(RequesterDetailsDto requesterDetailsDto);
 
-	public boolean deleteRequestById(Long id);
+	public boolean deleteRequestById(Long id) throws RequesterNotFoundException;
 
 	public RequesterDetails getReqeustDetailsById(Long id) throws RequesterNotFoundException;
 
-	public List<RequesterDetailsDto> getAllRequestOfDonarForApproving(Long donarId);
+	public List<RequesterDetailsDto> getAllRequestOfDonarForApproving(Long donarId) throws RequesterNotFoundException;
 
 }

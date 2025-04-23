@@ -84,37 +84,30 @@ public class RequesterDetailsServiceImpl implements RequesterDetailsService {
 
 	@Override
 	public RequesterDetails getReqeustDetailsById(Long id) throws RequesterNotFoundException {
-	
-			logger.info("Cursor Enter in to DgetReqeustDetailsById inside service ====>  " + id);
-			Optional<RequesterDetails> byId = requesterDetailsRepository.findById(id);
-			if (byId.isPresent()) {
-				return byId.get();
-			} else {
-				throw new RequesterNotFoundException("Requster not found based on this id " + id);
-			}
-		
-	
+
+		logger.info("Cursor Enter in to DgetReqeustDetailsById inside service ====>  " + id);
+		Optional<RequesterDetails> byId = requesterDetailsRepository.findById(id);
+		if (byId.isPresent()) {
+			return byId.get();
+		} else {
+			throw new RequesterNotFoundException("Requster not found based on this id " + id);
+		}
+
 	}
 
 	// if donar want to see how many requests he got for blood donation approval
 	@Override
-	public List<RequesterDetailsDto> getAllRequestOfDonarForApproving(Long donarId) {
-		try {
-			List<RequesterDetails> byDonarId = requesterDetailsRepository.getDonarDetails(donarId);
-			logger.info("Requester Data form DB based on Donar Id : " + mapper.writeValueAsString(byDonarId));
-			if (byDonarId == null) {
-				throw new RequesterNotFoundException(
-						"Requsters not found to send the donar based on this id " + donarId);
-			}
-			List<RequesterDetailsDto> donarDetails = new ArrayList<>();
-			byDonarId.stream().forEach(each -> {
-				donarDetails.add(mapper.convertValue(each, RequesterDetailsDto.class));
-			});
-			return donarDetails != null ? donarDetails : null;
-		} catch (Exception ex) {
-			ex.printStackTrace();
+	public List<RequesterDetailsDto> getAllRequestOfDonarForApproving(Long donarId) throws RequesterNotFoundException {
+
+		List<RequesterDetails> byDonarId = requesterDetailsRepository.getDonarDetails(donarId);
+		if (byDonarId == null || byDonarId.isEmpty()) {
+			throw new RequesterNotFoundException("Requsters not found to send the donar based on this id " + donarId);
 		}
-		return null;
+		List<RequesterDetailsDto> donarDetails = new ArrayList<>();
+		byDonarId.stream().forEach(each -> {
+			donarDetails.add(mapper.convertValue(each, RequesterDetailsDto.class));
+		});
+		return donarDetails != null ? donarDetails : null;
 
 	}
 

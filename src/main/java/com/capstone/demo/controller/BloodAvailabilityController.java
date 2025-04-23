@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.capstone.demo.config.AppConstants;
 import com.capstone.demo.config.DefaultValues;
 import com.capstone.demo.entity.BloodAvailability;
 import com.capstone.demo.exception.BloodNotAvailabilityException;
@@ -40,15 +39,13 @@ public class BloodAvailabilityController {
 	// Get all blood details to view in front end
 	@GetMapping(value = "/getBloodDetails")
 	public ResponseEntity<List<BloodAvailability>> getBloodDetails() {
-		try {
-			logger.info("Blood group controller method invoce   ");
-			List<BloodAvailability> bloodDetails = bloodAvailabilityServiceImpl.getBloodDetails();
-			if (bloodDetails != null && bloodDetails.size() > 0) {
-				return ResponseEntity.status(HttpStatus.OK).body(bloodDetails);
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
+
+		logger.info("Blood group controller method invoce   ");
+		List<BloodAvailability> bloodDetails = bloodAvailabilityServiceImpl.getBloodDetails();
+		if (bloodDetails != null && bloodDetails.size() > 0) {
+			return ResponseEntity.status(HttpStatus.OK).body(bloodDetails);
 		}
+
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 	}
 
@@ -68,16 +65,11 @@ public class BloodAvailabilityController {
 
 	@GetMapping(value = "/getBloodDetailsBasedOnBloodGroup/{blood}")
 	public ResponseEntity<List<BloodAvailability>> getBloodDetailsBasedOnBloodGroup(@PathVariable String blood) {
-		try {
-			logger.info("Blood group controller method invoce   " + blood);
-			List<BloodAvailability> bloodDetailsBasedOngroup = bloodAvailabilityServiceImpl
-					.getBloodDetailsBasedOnBloodGroup(blood);
-			if (bloodDetailsBasedOngroup != null && bloodDetailsBasedOngroup.size() > 0) {
-				return ResponseEntity.status(HttpStatus.OK).body(bloodDetailsBasedOngroup);
-			}
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
+		logger.info("Blood group controller method invoce   " + blood);
+		List<BloodAvailability> bloodDetailsBasedOngroup = bloodAvailabilityServiceImpl
+				.getBloodDetailsBasedOnBloodGroup(blood);
+		if (bloodDetailsBasedOngroup != null && bloodDetailsBasedOngroup.size() > 0) {
+			return ResponseEntity.status(HttpStatus.OK).body(bloodDetailsBasedOngroup);
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 	}
@@ -85,34 +77,16 @@ public class BloodAvailabilityController {
 	@GetMapping(value = "/getBloodDetailsBasedOnCityAndBloodGroup")
 	public ResponseEntity<List<BloodAvailability>> getBloodDetailsBasedOnCityAndBloodGroup(
 			@RequestParam Map<String, String> allParams) {
-		try {
-			logger.info("Blood group controller method invoce   " + mapper.writeValueAsString(allParams));
-			List<BloodAvailability> bloodDetailsBasedOnCityAndGroup = bloodAvailabilityServiceImpl
-					.getBloodDetailsBasedOnCityAndBloodGroup(allParams.get("city"), allParams.get("blood"));
-			if (bloodDetailsBasedOnCityAndGroup != null && bloodDetailsBasedOnCityAndGroup.size() > 0) {
-				return ResponseEntity.status(HttpStatus.OK).body(bloodDetailsBasedOnCityAndGroup);
-			}
 
-		} catch (Exception ex) {
-			ex.printStackTrace();
+		logger.info("Blood group controller method invoce   " + allParams.get("email") + "   "
+				+ allParams.get("bloodGroup"));
+		List<BloodAvailability> bloodDetailsBasedOnCityAndGroup = bloodAvailabilityServiceImpl
+				.getBloodDetailsBasedOnCityAndBloodGroup(allParams.get("city"), allParams.get("blood"));
+		if (bloodDetailsBasedOnCityAndGroup != null && bloodDetailsBasedOnCityAndGroup.size() > 0) {
+			return ResponseEntity.status(HttpStatus.OK).body(bloodDetailsBasedOnCityAndGroup);
 		}
+
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 	}
-
-	// based on blood group and city we need to increase the blood count
-
-//	@GetMapping(value = "/addingBloodCountFromDonars")
-//	public ResponseEntity<String> addingBloodCountFromDonars() {
-//		try {
-//			logger.info("Controller addingBloodCountFromDonars invoked ..!");
-//			boolean addingBloodCountFromDonars = bloodAvailabilityServiceImpl.addingBloodCountFromDonars();
-//			return addingBloodCountFromDonars
-//					? ResponseEntity.status(HttpStatus.OK).body(defaultValues.getMessage().get(AppConstants.SUCCESS))
-//					: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-//		} catch (Exception ex) {
-//			ex.printStackTrace();
-//		}
-//		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-//	}
 
 }

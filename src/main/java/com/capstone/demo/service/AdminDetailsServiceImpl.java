@@ -15,9 +15,11 @@ import com.capstone.demo.dto.UserDetailsDto;
 import com.capstone.demo.entity.AdminOperations;
 import com.capstone.demo.entity.MyUserDetails;
 import com.capstone.demo.entity.RequesterDetails;
+import com.capstone.demo.exception.RequesterNotFoundException;
 import com.capstone.demo.repository.AdminDetailsRepository;
 import com.capstone.demo.repository.MyUserDetailsRepository;
 import com.capstone.demo.repository.RequesterDetailsRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
@@ -40,37 +42,39 @@ public class AdminDetailsServiceImpl implements AdminDetailsService {
 	private RequesterDetailsRepository requesterDetailsRepository;
 
 	@Override
-	public List<UserDetailsDto> getAllDonarsForAdmin() {
+	public List<UserDetailsDto> getAllDonarsForAdmin() throws RequesterNotFoundException {
+
+		List<MyUserDetails> allDonarsForAdmin = myUserDetailsRepository.getAllDonarsForAdmin();
 		try {
-			List<MyUserDetails> allDonarsForAdmin = myUserDetailsRepository.getAllDonarsForAdmin();
 			logger.info("Data from DB : " + mapper.writeValueAsString(allDonarsForAdmin));
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		if (allDonarsForAdmin != null && allDonarsForAdmin.size() > 0) {
 			List<UserDetailsDto> listUserDto = new ArrayList<>();
 			allDonarsForAdmin.stream().forEach(each -> {
 				listUserDto.add(mapper.convertValue(each, UserDetailsDto.class));
 			});
 			return listUserDto != null && listUserDto.size() > 0 ? listUserDto : null;
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			logger.error("while fetching the data form DB we will get the exception ", ex.getMessage());
+		} else {
+			throw new RequesterNotFoundException("Donars are not foud inside the DB ..!");
 		}
-		return null;
+
 	}
 
 	@Override
-	public List<RequesterDetailsDto> getAllRequesterForApproval() {
-		try {
-			List<RequesterDetails> allRequesterForApproval = requesterDetailsRepository.getAllRequesterForApproval();
-			logger.info("Data from DB : " + mapper.writeValueAsString(allRequesterForApproval));
+	public List<RequesterDetailsDto> getAllRequesterForApproval() throws RequesterNotFoundException {
+		logger.info("Cursor enter in to srevice method inside getAllRequesterForApproval");
+		List<RequesterDetails> allRequesterForApproval = requesterDetailsRepository.getAllRequesterForApproval();
+		if (allRequesterForApproval != null && allRequesterForApproval.size() > 0) {
 			List<RequesterDetailsDto> allReqeusts = new ArrayList<>();
 			allRequesterForApproval.stream().forEach(each -> {
 				allReqeusts.add(mapper.convertValue(each, RequesterDetailsDto.class));
 			});
 			return allReqeusts != null ? allReqeusts : null;
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			logger.error("while fetching the data form DB we will get the exception ", ex.getMessage());
+		} else {
+			throw new RequesterNotFoundException("Requesters are not foud inside the DB ..!");
 		}
-		return null;
 
 	}
 
