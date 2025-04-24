@@ -33,7 +33,7 @@ public class AdminOperations {
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "requester_id", nullable = false, referencedColumnName = "id")
 	private RequesterDetails requesterDetails;
-
+    
 	private String approvalStatus;
 
 	@UpdateTimestamp

@@ -23,7 +23,11 @@ public class BloodAvailability {
 
 	@NotBlank
 	private String bloodGroup;
+
+	@NotBlank
 	private Integer quantity;
+
+	@NotBlank
 	private String city;
 
 	public BloodAvailability() {
@@ -87,8 +91,5 @@ public class BloodAvailability {
 		return Objects.equals(bloodGroup, other.bloodGroup) && Objects.equals(bloodId, other.bloodId)
 				&& Objects.equals(city, other.city) && Objects.equals(quantity, other.quantity);
 	}
-	
-	
-	
 
 }

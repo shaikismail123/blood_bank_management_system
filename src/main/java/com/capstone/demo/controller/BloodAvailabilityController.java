@@ -78,7 +78,7 @@ public class BloodAvailabilityController {
 	public ResponseEntity<List<BloodAvailability>> getBloodDetailsBasedOnCityAndBloodGroup(
 			@RequestParam Map<String, String> allParams) {
 
-		logger.info("Blood group controller method invoce   " + allParams.get("email") + "   "
+		logger.info("Blood group controller method invoce   " + allParams.get("city") + "   "
 				+ allParams.get("bloodGroup"));
 		List<BloodAvailability> bloodDetailsBasedOnCityAndGroup = bloodAvailabilityServiceImpl
 				.getBloodDetailsBasedOnCityAndBloodGroup(allParams.get("city"), allParams.get("blood"));

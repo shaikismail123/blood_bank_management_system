@@ -1,5 +1,6 @@
 package com.capstone.demo.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,19 +18,26 @@ public class MyUserDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long userId;
-
+    
+	@NotBlank
 	private String firstName;
 
+	@NotBlank
 	private String lastName;
-
+	
+	@NotBlank
 	private String bloodGroup;
-
+	
+	@NotBlank
 	private String city;
+	
 	@Email
 	private String email;
 
+	@NotBlank
 	private String phoneNumber;
 
+	@NotBlank
 	private String userType; // DONOR, REQUESTOR, ADMIN
 
 	@NotBlank
