@@ -10,16 +10,18 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.capstone.demo.config.AppConstants;
 import com.capstone.demo.config.DefaultValues;
 import com.capstone.demo.dto.RequesterDetailsDto;
+import com.capstone.demo.dto.UsersDto;
 import com.capstone.demo.entity.RequesterDetails;
 import com.capstone.demo.exception.RequesterNotFoundException;
+import com.capstone.demo.exception.UserNotFoundException;
 import com.capstone.demo.service.RequesterDetailsServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -70,13 +72,24 @@ public class RequesterDetailsController {
 	@GetMapping(value = "/getReqeustDetailsById/{id}")
 	public ResponseEntity<RequesterDetails> getReqeustDetailsById(@PathVariable Long id)
 			throws RequesterNotFoundException {
-	
-			logger.info("Cusor enter in to getReqeustDetailsById controller " + id);
-			RequesterDetails reqeustDetailsById = requesterDetailsServiceImpl.getReqeustDetailsById(id);
-			return reqeustDetailsById != null ? ResponseEntity.status(HttpStatus.OK).body(reqeustDetailsById)
-					: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-		
-		
+
+		logger.info("Cusor enter in to getReqeustDetailsById controller " + id);
+		RequesterDetails reqeustDetailsById = requesterDetailsServiceImpl.getReqeustDetailsById(id);
+		return reqeustDetailsById != null ? ResponseEntity.status(HttpStatus.OK).body(reqeustDetailsById)
+				: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+
+	}
+
+	// for updating the donar person details donar can chage his personal details
+	// only but not id , username, password
+	@PutMapping("/updateRequester")
+	public ResponseEntity<String> updateDonerDetails(@RequestBody UsersDto UsersDto) throws UserNotFoundException {
+		logger.info("Cursor enter in to Doner updation method inside controller");
+		boolean insertUserDetails = requesterDetailsServiceImpl.updateRequesterDetails(UsersDto);
+		return insertUserDetails
+				? ResponseEntity.status(HttpStatus.OK).body(defaultValues.getMessage().get(AppConstants.UPDATE))
+				: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+
 	}
 
 }

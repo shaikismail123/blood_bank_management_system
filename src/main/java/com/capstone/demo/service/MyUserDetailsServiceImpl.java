@@ -27,18 +27,19 @@ public class MyUserDetailsServiceImpl implements MyUserDetailsService, UserDetai
 	private ObjectMapper mapper = new ObjectMapper();
 
 	@Autowired
-	private PasswordEncoder pwdEncoder;
-
-	@Autowired
 	private MyUserDetailsRepository userDetailsRepository;
 
 	@Autowired
 	private BloodAvailabilityServiceImpl bloodAvailabilityServiceImpl;
+	
+	@Autowired
+	PasswordEncoder pwdEncoder;
 
 	@Override
 	public boolean insertUserDetails(UserDetailsDto userDetailsDto) {
 		try {
 			logger.info("Service method is invoking " + mapper.writeValueAsString(userDetailsDto));
+			
 			String encodedPwd = pwdEncoder.encode(userDetailsDto.getPasswordHash());
 			userDetailsDto.setPasswordHash(encodedPwd);
 			if (userDetailsDto.getUserType().equalsIgnoreCase("DONAR")) {

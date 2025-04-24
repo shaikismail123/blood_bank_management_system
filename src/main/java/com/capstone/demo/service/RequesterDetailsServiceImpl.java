@@ -8,11 +8,15 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.capstone.demo.config.AppConstants;
 import com.capstone.demo.config.DefaultValues;
 import com.capstone.demo.dto.RequesterDetailsDto;
+import com.capstone.demo.dto.UserDetailsDto;
+import com.capstone.demo.dto.UsersDto;
+import com.capstone.demo.emailSender.EmailSender;
 import com.capstone.demo.entity.MyUserDetails;
 import com.capstone.demo.entity.RequesterDetails;
 import com.capstone.demo.exception.RequesterNotFoundException;
@@ -40,6 +44,12 @@ public class RequesterDetailsServiceImpl implements RequesterDetailsService {
 	@Autowired
 	DefaultValues defaultValues;
 
+	@Value("${subject.formail}")
+	private String subject;
+
+	@Value("${body.foremail}")
+	private String body;
+
 	@Override
 	public boolean saveRequesterDetails(RequesterDetailsDto requesterDetailsDto) {
 		try {
@@ -55,7 +65,12 @@ public class RequesterDetailsServiceImpl implements RequesterDetailsService {
 			requesterDetailsDto.setDonarId(byDonarId != null ? byDonarId : null);
 			requesterDetailsDto.setRequiredDate(String.valueOf(LocalDate.now()));
 			RequesterDetails details = mapper.convertValue(requesterDetailsDto, RequesterDetails.class);
-			return requesterDetailsRepository.save(details).getId() != null;
+			RequesterDetails requesterDetails = requesterDetailsRepository.save(details);
+			if (requesterDetails != null) {
+				// Here sending email to admin to know the request and for approve
+				EmailSender.sendEmail(myUserDetailsRepository.getAdminEmail(), subject, body);
+				return true;
+			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("something went wrong while adding reqeuster details ", ex.getMessage());
@@ -84,37 +99,51 @@ public class RequesterDetailsServiceImpl implements RequesterDetailsService {
 
 	@Override
 	public RequesterDetails getReqeustDetailsById(Long id) throws RequesterNotFoundException {
-	
-			logger.info("Cursor Enter in to DgetReqeustDetailsById inside service ====>  " + id);
-			Optional<RequesterDetails> byId = requesterDetailsRepository.findById(id);
-			if (byId.isPresent()) {
-				return byId.get();
-			} else {
-				throw new RequesterNotFoundException("Requster not found based on this id " + id);
-			}
-		
-	
+
+		logger.info("Cursor Enter in to DgetReqeustDetailsById inside service ====>  " + id);
+		Optional<RequesterDetails> byId = requesterDetailsRepository.findById(id);
+		if (byId.isPresent()) {
+			return byId.get();
+		} else {
+			throw new RequesterNotFoundException("Requster not found based on this id " + id);
+		}
+
 	}
 
 	// if donar want to see how many requests he got for blood donation approval
 	@Override
-	public List<RequesterDetailsDto> getAllRequestOfDonarForApproving(Long donarId) {
-		try {
-			List<RequesterDetails> byDonarId = requesterDetailsRepository.getDonarDetails(donarId);
-			logger.info("Requester Data form DB based on Donar Id : " + mapper.writeValueAsString(byDonarId));
-			if (byDonarId == null) {
-				throw new RequesterNotFoundException(
-						"Requsters not found to send the donar based on this id " + donarId);
-			}
-			List<RequesterDetailsDto> donarDetails = new ArrayList<>();
-			byDonarId.stream().forEach(each -> {
-				donarDetails.add(mapper.convertValue(each, RequesterDetailsDto.class));
-			});
-			return donarDetails != null ? donarDetails : null;
-		} catch (Exception ex) {
-			ex.printStackTrace();
+	public List<RequesterDetailsDto> getAllRequestOfDonarForApproving(Long donarId) throws RequesterNotFoundException {
+
+		List<RequesterDetails> byDonarId = requesterDetailsRepository.getDonarDetails(donarId);
+		if (byDonarId == null || byDonarId.isEmpty()) {
+			throw new RequesterNotFoundException("Requsters not found to send the donar based on this id " + donarId);
 		}
-		return null;
+		List<RequesterDetailsDto> donarDetails = new ArrayList<>();
+		byDonarId.stream().forEach(each -> {
+			donarDetails.add(mapper.convertValue(each, RequesterDetailsDto.class));
+		});
+		return donarDetails != null ? donarDetails : null;
+
+	}
+
+	@Override
+	public boolean updateRequesterDetails(UsersDto usersDto) throws UserNotFoundException {
+		logger.info("Service method is invoking for update the Requester  ");
+		Optional<MyUserDetails> myUserDetails = myUserDetailsRepository.findById(usersDto.getUserId());
+		if (myUserDetails.isPresent()) {
+			// here we are converting the values from DTO class to entity class
+			MyUserDetails myUserDetails2 = myUserDetails.get();
+			myUserDetails2.setFirstName(usersDto.getFirstName());
+			myUserDetails2.setLastName(usersDto.getLastName());
+			myUserDetails2.setCity(usersDto.getCity());
+			myUserDetails2.setBloodGroup(usersDto.getBloodGroup());
+			myUserDetails2.setPhoneNumber(usersDto.getPhoneNumber());
+			// if the user will save it will return true other wise false
+			return myUserDetailsRepository.save(myUserDetails2).getUserId() != null;
+		} else {
+			throw new UserNotFoundException(
+					"Id is not availble for updating the Donar please check the User Id " + usersDto.getUserId());
+		}
 
 	}
 

@@ -36,17 +36,15 @@ public class BloodAvailabilityServiceImpl implements BloodAvailabilityService {
 	private MyUserDetailsRepository myUserDetailsRepository;
 
 	@Override
-	public List<BloodAvailability> getBloodDetails() {
-		try {
-			List<BloodAvailability> bloodDetails = bloodAvailabilityRepository.findAll();
-			logger.info("Data form DB : " + mapper.writeValueAsString(bloodDetails));
-			if (bloodDetails != null) {
-				return bloodDetails;
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
+	public List<BloodAvailability> getBloodDetails() throws BloodNotAvailabilityException {
+
+		List<BloodAvailability> bloodDetails = bloodAvailabilityRepository.findAll();
+		if (bloodDetails != null && bloodDetails.size() > 0) {
+			return bloodDetails;
+		} else {
+			throw new BloodNotAvailabilityException("Blood data not available ");
 		}
-		return null;
+
 	}
 
 	@Override

@@ -20,8 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.capstone.demo.config.AppConstants;
 import com.capstone.demo.config.DefaultValues;
 import com.capstone.demo.dto.RequesterDetailsDto;
-import com.capstone.demo.dto.UserDetailsDto;
+import com.capstone.demo.dto.UsersDto;
 import com.capstone.demo.entity.DonarDetails;
+import com.capstone.demo.exception.RequesterNotFoundException;
 import com.capstone.demo.exception.UserNotFoundException;
 import com.capstone.demo.service.DonarDetailsServiceImpl;
 import com.capstone.demo.service.MyUserDetailsServiceImpl;
@@ -65,21 +66,16 @@ public class DonarDetailsController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 	}
 
-	// for updating the donar person details
+	// for updating the donar person details donar can chage his personal details
+	// only but not id , username, password
 	@PutMapping("/updatedoner")
-	public ResponseEntity<String> updateDonerDetails(@RequestBody UserDetailsDto userDetailsDto) {
-		try {
-			logger.info("Cursor enter in to Doner updation method inside controller");
-			boolean insertUserDetails = myUserDetailsServiceImpl.insertUserDetails(userDetailsDto);
-			return insertUserDetails
-					? ResponseEntity.status(HttpStatus.OK).body(defaultValues.getMessage().get(AppConstants.UPDATE))
-					: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-		} catch (Exception e) {
-			logger.info("something went wrong while updating the doner" + e.getMessage());
-			e.printStackTrace();
-		}
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-				.body(defaultValues.getMessage().get(AppConstants.FAIL));
+	public ResponseEntity<String> updateDonerDetails(@RequestBody UsersDto usersDto) throws UserNotFoundException {
+		logger.info("Cursor enter in to Doner updation method inside controller");
+		boolean insertUserDetails = donarDetailsServiceImpl.updateDonarDetails(usersDto);
+		return insertUserDetails
+				? ResponseEntity.status(HttpStatus.OK).body(defaultValues.getMessage().get(AppConstants.UPDATE))
+				: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+
 	}
 
 	// for deleting the doner data by id
@@ -93,18 +89,15 @@ public class DonarDetailsController {
 	}
 
 	@GetMapping(value = "/getAllRequestOfDonar/{donarId}")
-	public ResponseEntity<List<RequesterDetailsDto>> getAllRequestOfDonarForApproving(@PathVariable Long donarId) {
-		try {
-			logger.info("<========= cursor enter in to getAllRequestOfDonar method inside ==========>  " + donarId);
-			List<RequesterDetailsDto> allRequestOfDonarForApproving = requesterDetailsServiceImpl
-					.getAllRequestOfDonarForApproving(donarId);
-			return allRequestOfDonarForApproving != null
-					? ResponseEntity.status(HttpStatus.OK).body(allRequestOfDonarForApproving)
-					: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+	public ResponseEntity<List<RequesterDetailsDto>> getAllRequestOfDonarForApproving(@PathVariable Long donarId)
+			throws RequesterNotFoundException {
+		logger.info("<========= cursor enter in to getAllRequestOfDonar method inside ==========>  " + donarId);
+		List<RequesterDetailsDto> allRequestOfDonarForApproving = requesterDetailsServiceImpl
+				.getAllRequestOfDonarForApproving(donarId);
+		return allRequestOfDonarForApproving != null
+				? ResponseEntity.status(HttpStatus.OK).body(allRequestOfDonarForApproving)
+				: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+
 	}
 
 }
