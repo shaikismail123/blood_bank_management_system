@@ -52,7 +52,7 @@ public class BloodAvailabilityServiceImpl implements BloodAvailabilityService {
 			throws BloodNotAvailabilityException {
 
 		logger.info("Blood Service getBloodDetails invoked ...!");
-		List<BloodAvailability> bloodDetailsBasedOnCityAndGroup = bloodAvailabilityRepository.getBloodDetails(city,
+		List<BloodAvailability> bloodDetailsBasedOnCityAndGroup = bloodAvailabilityRepository.getBloodDetails(city.toUpperCase(),
 				bloodGroup);
 
 		if (bloodDetailsBasedOnCityAndGroup.size() > 0) {
@@ -68,7 +68,7 @@ public class BloodAvailabilityServiceImpl implements BloodAvailabilityService {
 	public List<BloodAvailability> getBloodDetailsBasedOnCity(String city) throws BloodNotAvailabilityException {
 
 		logger.info("Blood Service getBloodDetailsBasedOnCity invoked ...!");
-		List<BloodAvailability> bloodDetails = bloodAvailabilityRepository.getBloodDetailsBasedOnCity(city);
+		List<BloodAvailability> bloodDetails = bloodAvailabilityRepository.getBloodDetailsBasedOnCity(city.toUpperCase());
 		if (bloodDetails.size() > 0) {
 			return bloodDetails != null ? bloodDetails : null;
 		} else {
@@ -83,7 +83,7 @@ public class BloodAvailabilityServiceImpl implements BloodAvailabilityService {
 
 		logger.info("Blood Service getBloodDetailsBasedOnBloodGroup invoked ...!");
 
-		List<BloodAvailability> bloodDetails = bloodAvailabilityRepository.findByBloodGroup(bloodGroup);
+		List<BloodAvailability> bloodDetails = bloodAvailabilityRepository.findByBloodGroup(bloodGroup.toUpperCase());
 
 		if (bloodDetails.size() > 0) {
 			return bloodDetails != null ? bloodDetails : null;

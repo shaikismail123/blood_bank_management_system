@@ -1,6 +1,7 @@
 package com.capstone.demo.service;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -31,7 +32,7 @@ public class MyUserDetailsServiceImpl implements MyUserDetailsService, UserDetai
 
 	@Autowired
 	private BloodAvailabilityServiceImpl bloodAvailabilityServiceImpl;
-	
+
 	@Autowired
 	PasswordEncoder pwdEncoder;
 
@@ -39,12 +40,14 @@ public class MyUserDetailsServiceImpl implements MyUserDetailsService, UserDetai
 	public boolean insertUserDetails(UserDetailsDto userDetailsDto) {
 		try {
 			logger.info("Service method is invoking " + mapper.writeValueAsString(userDetailsDto));
-			
+			userDetailsDto.setUserType(userDetailsDto.getUserType().toUpperCase());
+			userDetailsDto.setCity(userDetailsDto.getCity().toUpperCase());
+			userDetailsDto.setBloodGroup(userDetailsDto.getBloodGroup().toUpperCase());
 			String encodedPwd = pwdEncoder.encode(userDetailsDto.getPasswordHash());
 			userDetailsDto.setPasswordHash(encodedPwd);
 			if (userDetailsDto.getUserType().equalsIgnoreCase("DONAR")) {
 				logger.info("<================= blood packets ading method is invoke  ============>");
-				// This method is for adding blood count form the donor
+				// This method is for adding blood count from the donor
 				bloodAvailabilityServiceImpl.addingBloodCountFromDonars(userDetailsDto);
 			}
 			// here we are converting the values from DTO class to entity class
@@ -89,6 +92,17 @@ public class MyUserDetailsServiceImpl implements MyUserDetailsService, UserDetai
 		MyUserDetails c = userDetailsRepository.findByEmail(username);
 
 		return new User(c.getEmail(), c.getPasswordHash(), Collections.emptyList());
+
+	}
+
+	public List<MyUserDetails> getAlldonarsForMakingRequest() throws UserNotFoundException {
+		logger.info("Cursor Enter in to getAlldonarsForMakingRequest method inside service ====>  ");
+		List<MyUserDetails> alldonarsForMakingRequest = userDetailsRepository.getAlldonarsForMakingRequest();
+		if (alldonarsForMakingRequest != null && alldonarsForMakingRequest.size() > 0) {
+			return alldonarsForMakingRequest;
+		} else {
+			throw new UsernameNotFoundException("Donar are not available in side the DB .....!");
+		}
 
 	}
 

@@ -14,9 +14,9 @@ public interface AdminDetailsService {
 
 	public List<RequesterDetailsDto> getAllRequesterForApproval() throws RequesterNotFoundException;
 
-//	public String updateRequsterDetaisByAdmin(RequesterDetails reqeuserDetails);
-
 	public String saveAdminDetails(AdminOperations adminOperations);
 
 	List<UserDetailsDto> getAllRequestersForAdmin() throws RequesterNotFoundException;
+	
+	
 }

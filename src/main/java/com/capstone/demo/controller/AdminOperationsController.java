@@ -97,9 +97,11 @@ public class AdminOperationsController {
 
 	}
 
-	// get both requeste and donar end point
-
-	// delete the requester or donar end point
+	// Admin can delete the request if he does not get appropriate data from requester
+	
+	public ResponseEntity<String> deleteRequster(){
+		return null;
+	}
 
 	// for updation perpose we can reuse the same userDetails methods only (status)
 }

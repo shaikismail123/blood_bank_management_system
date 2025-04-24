@@ -1,5 +1,7 @@
 package com.capstone.demo.controller;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +21,12 @@ import com.capstone.demo.config.AppConstants;
 import com.capstone.demo.config.DefaultValues;
 import com.capstone.demo.dto.RequesterDetailsDto;
 import com.capstone.demo.dto.UsersDto;
+import com.capstone.demo.entity.MyUserDetails;
 import com.capstone.demo.entity.RequesterDetails;
 import com.capstone.demo.exception.RequesterNotFoundException;
 import com.capstone.demo.exception.UserNotFoundException;
+import com.capstone.demo.repository.MyUserDetailsRepository;
+import com.capstone.demo.service.MyUserDetailsServiceImpl;
 import com.capstone.demo.service.RequesterDetailsServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -38,6 +43,9 @@ public class RequesterDetailsController {
 
 	@Autowired
 	DefaultValues defaultValues;
+
+	@Autowired
+	MyUserDetailsServiceImpl myUserDetailsServiceImpl;
 
 	@PostMapping(value = "/saveRequesterDetails")
 	public ResponseEntity<String> saveRequesterDetails(@RequestBody RequesterDetailsDto requesterDetailsDto) {
@@ -69,7 +77,9 @@ public class RequesterDetailsController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 	}
 
-	@GetMapping(value = "/getReqeustDetailsById/{id}")
+	// get requester request details from DB requester_details not form uesr_details
+	// DB
+	@GetMapping(value = "/getReqeusterRequestDetailsById/{id}")
 	public ResponseEntity<RequesterDetails> getReqeustDetailsById(@PathVariable Long id)
 			throws RequesterNotFoundException {
 
@@ -88,6 +98,17 @@ public class RequesterDetailsController {
 		boolean insertUserDetails = requesterDetailsServiceImpl.updateRequesterDetails(UsersDto);
 		return insertUserDetails
 				? ResponseEntity.status(HttpStatus.OK).body(defaultValues.getMessage().get(AppConstants.UPDATE))
+				: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+
+	}
+
+	
+	// get all the donars for making reqeust from the requester 
+	@GetMapping(value = "/getAlldonarsForMakingRequest")
+	public ResponseEntity<List<MyUserDetails>> getAlldonarsForMakingRequest() throws UserNotFoundException {
+		logger.info("Cursor enter into getAlldonarsForMakingRequest ");
+		List<MyUserDetails> alldonarsForMakingRequest = myUserDetailsServiceImpl.getAlldonarsForMakingRequest();
+		return alldonarsForMakingRequest != null ? ResponseEntity.status(HttpStatus.OK).body(alldonarsForMakingRequest)
 				: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 
 	}
