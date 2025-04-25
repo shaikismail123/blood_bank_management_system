@@ -8,12 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.capstone.demo.config.AppConstants;
+import com.capstone.demo.config.DefaultValues;
 import com.capstone.demo.dto.RequesterDetailsDto;
 import com.capstone.demo.dto.UserDetailsDto;
 import com.capstone.demo.entity.AdminOperations;
@@ -31,6 +35,9 @@ public class AdminOperationsController {
 
 	@Autowired
 	private AdminDetailsServiceImpl adminDetailsServiceImpl;
+
+	@Autowired
+	DefaultValues defaultValues;
 
 	/**
 	 * This save end point will execute whenever the admin will approve the
@@ -71,8 +78,7 @@ public class AdminOperationsController {
 				: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 
 	}
-	
-	
+
 	@GetMapping(value = "/getAllRequesters")
 	public ResponseEntity<List<UserDetailsDto>> getAllRequestersForAdmin() throws RequesterNotFoundException {
 		logger.info("cursor enter in to admin controller for get all donar details ");
@@ -97,10 +103,21 @@ public class AdminOperationsController {
 
 	}
 
-	// Admin can delete the request if he does not get appropriate data from requester
-	
-	public ResponseEntity<String> deleteRequster(){
-		return null;
+	// Admin can delete the request if he does not get appropriate data from
+	// requester
+
+	@DeleteMapping(value = "/deleteReqeusterById/{id}")
+	public ResponseEntity<String> deleteReqeusterById(@PathVariable Long id) {
+		try {
+			logger.info("Cusor enter in to deleteReqeusterById controller " + id);
+			boolean deleteRequestById = adminDetailsServiceImpl.deleteRequestById(id);
+			return deleteRequestById
+					? ResponseEntity.status(HttpStatus.OK).body(defaultValues.getMessage().get(AppConstants.DELETE))
+					: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 	}
 
 	// for updation perpose we can reuse the same userDetails methods only (status)

@@ -30,7 +30,7 @@ public class AdminOperations {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long adminId;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne()
 	@JoinColumn(name = "requester_id", nullable = false, referencedColumnName = "id")
 	private RequesterDetails requesterDetails;
 

@@ -66,17 +66,6 @@ public class DonarDetailsController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 	}
 
-	// for updating the donar person details donar can chage his personal details
-	// only but not id , username, password
-	@PutMapping("/updatedoner")
-	public ResponseEntity<String> updateDonerDetails(@RequestBody UsersDto usersDto) throws UserNotFoundException {
-		logger.info("Cursor enter in to Doner updation method inside controller");
-		boolean insertUserDetails = donarDetailsServiceImpl.updateDonarDetails(usersDto);
-		return insertUserDetails
-				? ResponseEntity.status(HttpStatus.OK).body(defaultValues.getMessage().get(AppConstants.UPDATE))
-				: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-
-	}
 
 	// for deleting the doner data by id
 	@DeleteMapping("/deletedoner/{id}")
@@ -100,4 +89,7 @@ public class DonarDetailsController {
 
 	}
 
+	
+	
+	
 }

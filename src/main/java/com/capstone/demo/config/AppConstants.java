@@ -16,6 +16,8 @@ public interface AppConstants {
 	
 	public final static String INVALID ="invalid";
 	
+	public final static String REQUESTER ="requester";
+	
 	
 
 }

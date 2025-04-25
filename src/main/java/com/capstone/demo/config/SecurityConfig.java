@@ -15,10 +15,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
- 
+
 import com.capstone.demo.filter.AppFilter;
 import com.capstone.demo.service.MyUserDetailsServiceImpl;
- 
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -26,36 +26,36 @@ public class SecurityConfig {
 	private AppFilter filter;
 	@Autowired
 	private MyUserDetailsServiceImpl userDtlsSvc;
+
 	@Bean
 	public PasswordEncoder pwdEncoder() {
 		return new BCryptPasswordEncoder();
 	}
+
 	@Bean
-    public AuthenticationProvider authenticationProvider(){
-        DaoAuthenticationProvider authenticationProvider=
-        		new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(userDtlsSvc);
-        authenticationProvider.setPasswordEncoder(pwdEncoder());
-        return authenticationProvider;
-    }
- 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
- 
-        return http.csrf(customizer -> customizer.disable()).
-                authorizeHttpRequests(request -> request
-                        .requestMatchers("/userDetails/login", "/userDetails/registerUser", "/swagger-ui/**",
-                                "/v3/api-docs/**",
-                                "/swagger-resources/**",
-                                "/webjars/**").permitAll()
-                        .anyRequest().authenticated()).
-                httpBasic(Customizer.withDefaults()).
-                sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
-                .build();
-    }
+	public AuthenticationProvider authenticationProvider() {
+		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+		authenticationProvider.setUserDetailsService(userDtlsSvc);
+		authenticationProvider.setPasswordEncoder(pwdEncoder());
+		return authenticationProvider;
+	}
+
+	@Bean
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+		return config.getAuthenticationManager();
+	}
+
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		return http
+				// Exclude login/register endpoints from CSRF protection
+				.csrf(csrf -> csrf.ignoringRequestMatchers("/userDetails/login", "/userDetails/registerUser"))
+				.authorizeHttpRequests(auth -> auth
+						.requestMatchers("/userDetails/login", "/userDetails/registerUser", "/swagger-ui/**",
+								"/v3/api-docs/**", "/swagger-resources/**", "/webjars/**")
+						.permitAll().anyRequest().authenticated())
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.httpBasic(Customizer.withDefaults()) // optional with JWT
+				.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class).build();
+	}
 }

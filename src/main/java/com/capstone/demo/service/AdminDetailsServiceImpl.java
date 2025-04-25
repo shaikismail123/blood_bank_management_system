@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.capstone.demo.config.AppConstants;
 import com.capstone.demo.config.DefaultValues;
@@ -49,16 +50,20 @@ public class AdminDetailsServiceImpl implements AdminDetailsService {
 	@Value("$body.forrequester}")
 	private String body;
 
+	@Autowired
+	EmailSender emailSender;
+
 	@Override
+	@Transactional
 	public String saveAdminDetails(AdminOperations adminOperations) {
 		try {
+
 			AdminOperations operations = adminDetailsRepository.save(adminOperations);
 			if (operations != null) {
-
 				RequesterDetails requesterDetails = requesterDetailsRepository
 						.save(adminOperations.getRequesterDetails());
 				// here we are sending the email to requester regarding request approved
-				EmailSender.sendEmail(requesterDetails.getContactEmail(), subject, body);
+//				emailSender.sendEmail(requesterDetails.getContactEmail(), subject, body);
 				return requesterDetails != null ? defaultValues.getMessage().get(AppConstants.SUCCESS)
 						: defaultValues.getMessage().get(AppConstants.FAIL);
 			}
@@ -125,11 +130,18 @@ public class AdminDetailsServiceImpl implements AdminDetailsService {
 		}
 
 	}
-	
-	
-	
-	
-	
-	
+
+	@Override
+	public boolean deleteRequestById(Long id)  {
+		try {
+			logger.info("Cursor Enter in to Delete Reqeust by id method inside service ====>  " + id);
+			requesterDetailsRepository.deleteById(id);
+			logger.info(defaultValues.getMessage().get(AppConstants.DELETE));
+			return true;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return false;
+	}
 
 }

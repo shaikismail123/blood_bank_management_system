@@ -54,7 +54,7 @@ public class RequesterDetailsController {
 					+ mapper.writeValueAsString(requesterDetailsDto));
 			boolean saveRequesterDetails = requesterDetailsServiceImpl.saveRequesterDetails(requesterDetailsDto);
 			return saveRequesterDetails
-					? ResponseEntity.status(HttpStatus.OK).body(defaultValues.getMessage().get(AppConstants.SUCCESS))
+					? ResponseEntity.status(HttpStatus.OK).body(defaultValues.getMessage().get(AppConstants.REQUESTER))
 					: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 
 		} catch (Exception ex) {
@@ -90,20 +90,8 @@ public class RequesterDetailsController {
 
 	}
 
-	// for updating the donar person details donar can chage his personal details
-	// only but not id , username, password
-	@PutMapping("/updateRequester")
-	public ResponseEntity<String> updateDonerDetails(@RequestBody UsersDto UsersDto) throws UserNotFoundException {
-		logger.info("Cursor enter in to Doner updation method inside controller");
-		boolean insertUserDetails = requesterDetailsServiceImpl.updateRequesterDetails(UsersDto);
-		return insertUserDetails
-				? ResponseEntity.status(HttpStatus.OK).body(defaultValues.getMessage().get(AppConstants.UPDATE))
-				: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 
-	}
-
-	
-	// get all the donars for making reqeust from the requester 
+	// get all the donars for making reqeust from the requester
 	@GetMapping(value = "/getAlldonarsForMakingRequest")
 	public ResponseEntity<List<MyUserDetails>> getAlldonarsForMakingRequest() throws UserNotFoundException {
 		logger.info("Cursor enter into getAlldonarsForMakingRequest ");

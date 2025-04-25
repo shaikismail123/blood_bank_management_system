@@ -17,6 +17,7 @@ public interface AdminDetailsService {
 	public String saveAdminDetails(AdminOperations adminOperations);
 
 	List<UserDetailsDto> getAllRequestersForAdmin() throws RequesterNotFoundException;
-	
-	
+
+	boolean deleteRequestById(Long id) throws RequesterNotFoundException;
+
 }

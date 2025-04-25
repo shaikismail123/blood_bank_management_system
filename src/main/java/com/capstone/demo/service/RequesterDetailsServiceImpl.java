@@ -50,25 +50,20 @@ public class RequesterDetailsServiceImpl implements RequesterDetailsService {
 	@Value("${body.foremail}")
 	private String body;
 
+	@Autowired
+	private EmailSender emailSender;
+
 	@Override
 	public boolean saveRequesterDetails(RequesterDetailsDto requesterDetailsDto) {
 		try {
 			logger.info("Curser enter in to Save Request detaisl method inside service ");
-
-			MyUserDetails byDonarId = myUserDetailsRepository.findById(requesterDetailsDto.getDonarId().getUserId())
-					.get();
-
-			MyUserDetails byRequesterId = myUserDetailsRepository
-					.findById(requesterDetailsDto.getRequesterId().getUserId()).get();
-
-			requesterDetailsDto.setRequesterId(byRequesterId != null ? byRequesterId : null);
-			requesterDetailsDto.setDonarId(byDonarId != null ? byDonarId : null);
 			requesterDetailsDto.setRequiredDate(String.valueOf(LocalDate.now()));
 			RequesterDetails details = mapper.convertValue(requesterDetailsDto, RequesterDetails.class);
 			RequesterDetails requesterDetails = requesterDetailsRepository.save(details);
 			if (requesterDetails != null) {
 				// Here sending email to admin to know the request and for approve
-				EmailSender.sendEmail(myUserDetailsRepository.getAdminEmail(), subject, body);
+//				emailSender.sendEmail(myUserDetailsRepository.getAdminEmail(), subject, body);
+				logger.info("Admin mail : " + myUserDetailsRepository.getAdminEmail());
 				return true;
 			}
 		} catch (Exception ex) {

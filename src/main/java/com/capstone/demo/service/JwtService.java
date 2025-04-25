@@ -27,7 +27,7 @@ public class JwtService {
 
 	private String createToken(Map<String, Object> claims, String email) {
 		return Jwts.builder().setClaims(claims).setSubject(email).setIssuedAt(new Date())
-				.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
+				.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 300))
 				.signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
 	}
 
