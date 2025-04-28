@@ -1,12 +1,15 @@
 package com.capstone.demo.service;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,6 +22,8 @@ import com.capstone.demo.entity.MyUserDetails;
 import com.capstone.demo.exception.UserNotFoundException;
 import com.capstone.demo.repository.MyUserDetailsRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class MyUserDetailsServiceImpl implements MyUserDetailsService, UserDetailsService {
@@ -55,7 +60,7 @@ public class MyUserDetailsServiceImpl implements MyUserDetailsService, UserDetai
 			// if the user will save it will return true other wise false
 			return userDetailsRepository.save(details).getUserId() != null;
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.error("error ", ex.getMessage());
 		}
 		return false;
 	}
@@ -74,6 +79,7 @@ public class MyUserDetailsServiceImpl implements MyUserDetailsService, UserDetai
 	}
 
 	@Override
+	@Transactional
 	public boolean deleteDonerDetails(Long id) throws UserNotFoundException {
 		logger.info("Cursor Enter in to Delete Reqeust by id method inside service ====>  " + id);
 		Optional<MyUserDetails> byId = userDetailsRepository.findById(id);
@@ -86,22 +92,46 @@ public class MyUserDetailsServiceImpl implements MyUserDetailsService, UserDetai
 
 	}
 
+//	@Override
+//	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//
+//		MyUserDetails c = userDetailsRepository.findByEmail(username);
+//
+//		return new User(c.getEmail(), c.getPasswordHash(), Collections.emptyList());
+//
+//	}
+
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
 		MyUserDetails c = userDetailsRepository.findByEmail(username);
-
-		return new User(c.getEmail(), c.getPasswordHash(), Collections.emptyList());
+		if (c == null) {
+			throw new UsernameNotFoundException("User not found");
+		}
+//		return new User(c.getEmail(), c.getPasswordHash(), Collections.emptyList());
+		List<GrantedAuthority> authorities = new ArrayList<>();
+		switch (c.getUserType()) {
+		case "DONAR":
+			authorities.add(new SimpleGrantedAuthority("DONAR"));
+			break;
+		case "REQUESTER":
+			authorities.add(new SimpleGrantedAuthority("REQUESTER"));
+			break;
+		case "ADMIN":
+			authorities.add(new SimpleGrantedAuthority("ADMIN"));
+			break;
+		}
+		return new User(c.getEmail(), c.getPasswordHash(), authorities);
 
 	}
 
 	public List<MyUserDetails> getAlldonarsForMakingRequest() throws UserNotFoundException {
 		logger.info("Cursor Enter in to getAlldonarsForMakingRequest method inside service ====>  ");
 		List<MyUserDetails> alldonarsForMakingRequest = userDetailsRepository.getAlldonarsForMakingRequest();
-		if (alldonarsForMakingRequest != null && alldonarsForMakingRequest.size() > 0) {
-			return alldonarsForMakingRequest;
-		} else {
+		if (alldonarsForMakingRequest == null) {
 			throw new UsernameNotFoundException("Donar are not available in side the DB .....!");
+		} else {
+			return alldonarsForMakingRequest;
 		}
 
 	}

@@ -18,6 +18,10 @@ public interface AppConstants {
 	
 	public final static String REQUESTER ="requester";
 	
+	public final static String ERROR ="error";
+	
+	public final static String DONAR ="donar";
+	
 	
 
 }

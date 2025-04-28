@@ -52,11 +52,11 @@ public class BloodAvailabilityServiceImpl implements BloodAvailabilityService {
 			throws BloodNotAvailabilityException {
 
 		logger.info("Blood Service getBloodDetails invoked ...!");
-		List<BloodAvailability> bloodDetailsBasedOnCityAndGroup = bloodAvailabilityRepository.getBloodDetails(city.toUpperCase(),
-				bloodGroup);
+		List<BloodAvailability> bloodDetailsBasedOnCityAndGroup = bloodAvailabilityRepository
+				.getBloodDetails(city.toUpperCase(), bloodGroup);
 
 		if (bloodDetailsBasedOnCityAndGroup.size() > 0) {
-			return bloodDetailsBasedOnCityAndGroup != null ? bloodDetailsBasedOnCityAndGroup : null;
+			return bloodDetailsBasedOnCityAndGroup;
 		} else {
 			throw new BloodNotAvailabilityException(
 					"Blood not available based on this city" + city + " and blood group  " + bloodGroup);
@@ -68,9 +68,10 @@ public class BloodAvailabilityServiceImpl implements BloodAvailabilityService {
 	public List<BloodAvailability> getBloodDetailsBasedOnCity(String city) throws BloodNotAvailabilityException {
 
 		logger.info("Blood Service getBloodDetailsBasedOnCity invoked ...!");
-		List<BloodAvailability> bloodDetails = bloodAvailabilityRepository.getBloodDetailsBasedOnCity(city.toUpperCase());
+		List<BloodAvailability> bloodDetails = bloodAvailabilityRepository
+				.getBloodDetailsBasedOnCity(city.toUpperCase());
 		if (bloodDetails.size() > 0) {
-			return bloodDetails != null ? bloodDetails : null;
+			return bloodDetails;
 		} else {
 			throw new BloodNotAvailabilityException("Blood not available based on this city " + city);
 		}
@@ -85,8 +86,8 @@ public class BloodAvailabilityServiceImpl implements BloodAvailabilityService {
 
 		List<BloodAvailability> bloodDetails = bloodAvailabilityRepository.findByBloodGroup(bloodGroup.toUpperCase());
 
-		if (bloodDetails.size() > 0) {
-			return bloodDetails != null ? bloodDetails : null;
+		if (bloodDetails != null) {
+			return bloodDetails;
 		} else {
 			throw new BloodNotAvailabilityException("Blood not available based on this blood group " + bloodGroup);
 		}
@@ -100,17 +101,18 @@ public class BloodAvailabilityServiceImpl implements BloodAvailabilityService {
 					.findByBloodGroupAndCity(userDetailsDto.getBloodGroup(), userDetailsDto.getCity());
 			logger.info("Object form the DB: " + mapper.writeValueAsString(byBloodGroupAndCity));
 			if (byBloodGroupAndCity != null) {
-				byBloodGroupAndCity.setQuantity(byBloodGroupAndCity.getQuantity() + 1);
+				byBloodGroupAndCity
+						.setQuantity(String.valueOf(Integer.parseInt(byBloodGroupAndCity.getQuantity()) + 1));
 				bloodAvailabilityRepository.save(byBloodGroupAndCity);
 			} else {
 				BloodAvailability bloodAvailability = new BloodAvailability();
 				bloodAvailability.setBloodGroup(userDetailsDto.getBloodGroup());
 				bloodAvailability.setCity(userDetailsDto.getCity());
-				bloodAvailability.setQuantity(1);
+				bloodAvailability.setQuantity(String.valueOf(1));
 				bloodAvailabilityRepository.save(bloodAvailability);
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.error("error ", ex.getMessage());
 			logger.error("Exception while adding blood count: ", ex);
 		}
 

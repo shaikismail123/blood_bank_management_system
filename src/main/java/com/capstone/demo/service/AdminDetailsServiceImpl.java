@@ -58,17 +58,16 @@ public class AdminDetailsServiceImpl implements AdminDetailsService {
 	public String saveAdminDetails(AdminOperations adminOperations) {
 		try {
 
-			AdminOperations operations = adminDetailsRepository.save(adminOperations);
-			if (operations != null) {
-				RequesterDetails requesterDetails = requesterDetailsRepository
-						.save(adminOperations.getRequesterDetails());
-				// here we are sending the email to requester regarding request approved
+			adminDetailsRepository.save(adminOperations);
+			adminOperations.getRequesterDetails()
+					.setStatus(adminOperations.getRequesterDetails().getStatus().toUpperCase());
+			requesterDetailsRepository.save(adminOperations.getRequesterDetails());
+			// here we are sending the email to requester regarding request approved
 //				emailSender.sendEmail(requesterDetails.getContactEmail(), subject, body);
-				return requesterDetails != null ? defaultValues.getMessage().get(AppConstants.SUCCESS)
-						: defaultValues.getMessage().get(AppConstants.FAIL);
-			}
+			return defaultValues.getMessage().get(AppConstants.SUCCESS);
+
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.error(AppConstants.ERROR, ex.getMessage());
 		}
 		return defaultValues.getMessage().get(AppConstants.FAIL);
 	}
@@ -79,8 +78,8 @@ public class AdminDetailsServiceImpl implements AdminDetailsService {
 		List<MyUserDetails> allDonarsForAdmin = myUserDetailsRepository.getAllDonarsForAdmin();
 		try {
 			logger.info("Data from DB : " + mapper.writeValueAsString(allDonarsForAdmin));
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+		} catch (JsonProcessingException ex) {
+			logger.error(AppConstants.ERROR, ex.getMessage());
 		}
 		if (allDonarsForAdmin != null && allDonarsForAdmin.size() > 0) {
 			List<UserDetailsDto> listUserDto = new ArrayList<>();
@@ -103,7 +102,7 @@ public class AdminDetailsServiceImpl implements AdminDetailsService {
 			allRequesterForApproval.stream().forEach(each -> {
 				allReqeusts.add(mapper.convertValue(each, RequesterDetailsDto.class));
 			});
-			return allReqeusts != null ? allReqeusts : null;
+			return allReqeusts;
 		} else {
 			throw new RequesterNotFoundException("Requesters are not foud inside the DB ..!");
 		}
@@ -116,8 +115,8 @@ public class AdminDetailsServiceImpl implements AdminDetailsService {
 		List<MyUserDetails> allDonarsForAdmin = myUserDetailsRepository.getAllRequestersForAdmin();
 		try {
 			logger.info("Data from DB : " + mapper.writeValueAsString(allDonarsForAdmin));
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+		} catch (JsonProcessingException ex) {
+			logger.error(AppConstants.ERROR, ex.getMessage());
 		}
 		if (allDonarsForAdmin != null && allDonarsForAdmin.size() > 0) {
 			List<UserDetailsDto> listUserDto = new ArrayList<>();
@@ -132,14 +131,18 @@ public class AdminDetailsServiceImpl implements AdminDetailsService {
 	}
 
 	@Override
-	public boolean deleteRequestById(Long id)  {
+	@Transactional
+	public boolean deleteRequestById(Long id) {
 		try {
 			logger.info("Cursor Enter in to Delete Reqeust by id method inside service ====>  " + id);
+			List<AdminOperations> adminOperationsToDelete = adminDetailsRepository.findByRequesterDetails_AdminId(id);
+			adminDetailsRepository.deleteAll(adminOperationsToDelete);
 			requesterDetailsRepository.deleteById(id);
 			logger.info(defaultValues.getMessage().get(AppConstants.DELETE));
 			return true;
 		} catch (Exception ex) {
 			ex.printStackTrace();
+			logger.error(AppConstants.ERROR, ex.getMessage());
 		}
 		return false;
 	}

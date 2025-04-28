@@ -41,7 +41,7 @@ public class DonarDetailsServiceImpl implements DonarDetailsService {
 					? defaultValues.getMessage().get(AppConstants.SUCCESS)
 					: defaultValues.getMessage().get(AppConstants.FAIL);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.error("error ", ex.getMessage());
 		}
 		return null;
 	}
@@ -66,6 +66,5 @@ public class DonarDetailsServiceImpl implements DonarDetailsService {
 		}
 
 	}
-
 
 }

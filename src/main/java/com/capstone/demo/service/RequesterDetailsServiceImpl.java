@@ -58,16 +58,17 @@ public class RequesterDetailsServiceImpl implements RequesterDetailsService {
 		try {
 			logger.info("Curser enter in to Save Request detaisl method inside service ");
 			requesterDetailsDto.setRequiredDate(String.valueOf(LocalDate.now()));
+			requesterDetailsDto.setStatus(requesterDetailsDto.getStatus().toUpperCase());
 			RequesterDetails details = mapper.convertValue(requesterDetailsDto, RequesterDetails.class);
 			RequesterDetails requesterDetails = requesterDetailsRepository.save(details);
 			if (requesterDetails != null) {
 				// Here sending email to admin to know the request and for approve
 //				emailSender.sendEmail(myUserDetailsRepository.getAdminEmail(), subject, body);
-				logger.info("Admin mail : " + myUserDetailsRepository.getAdminEmail());
+//				logger.info("Admin mail : " + myUserDetailsRepository.getAdminEmail());
 				return true;
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.error("error ",ex.getMessage());
 			logger.error("something went wrong while adding reqeuster details ", ex.getMessage());
 		}
 
@@ -87,7 +88,7 @@ public class RequesterDetailsServiceImpl implements RequesterDetailsService {
 			logger.info(defaultValues.getMessage().get(AppConstants.DELETE));
 			return true;
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.error("error ",ex.getMessage());
 		}
 		return false;
 	}
@@ -117,7 +118,7 @@ public class RequesterDetailsServiceImpl implements RequesterDetailsService {
 		byDonarId.stream().forEach(each -> {
 			donarDetails.add(mapper.convertValue(each, RequesterDetailsDto.class));
 		});
-		return donarDetails != null ? donarDetails : null;
+		return donarDetails;
 
 	}
 

@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping(value = "donar")
-@CrossOrigin(value = "*")
+//@CrossOrigin(value = "*")
 public class DonarDetailsController {
 
 	private Logger logger = LoggerFactory.getLogger(DonarDetailsController.class);
@@ -58,24 +58,23 @@ public class DonarDetailsController {
 			logger.info("<======= Cursor enter into saveDonarApprovedReqeusts method inside controller ======>");
 			String saveDonarApprovedReqeusts = donarDetailsServiceImpl.saveDonarApprovedReqeusts(donarDetails);
 			return saveDonarApprovedReqeusts != null
-					? ResponseEntity.status(HttpStatus.OK).body(defaultValues.getMessage().get(AppConstants.SUCCESS))
+					? ResponseEntity.status(HttpStatus.OK).body(defaultValues.getMessage().get(AppConstants.DONAR))
 					: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.error("error ", ex.getMessage());
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 	}
 
-
-	// for deleting the doner data by id
-	@DeleteMapping("/deletedoner/{id}")
-	public ResponseEntity<String> deleteDonerDetails(@PathVariable Long id) throws UserNotFoundException {
-		logger.info("Cursor enter in to Doner updation method inside controller");
-		boolean deleteDonerDetails = myUserDetailsServiceImpl.deleteDonerDetails(id);
-		return deleteDonerDetails
-				? ResponseEntity.status(HttpStatus.OK).body(defaultValues.getMessage().get(AppConstants.DELETE))
-				: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-	}
+//	// for deleting the doner data by id
+//	@DeleteMapping("/deleteDoner/{id}")
+//	public ResponseEntity<String> deleteDonerDetails(@PathVariable Long id) throws UserNotFoundException {
+//		logger.info("Cursor enter in to Doner updation method inside controller");
+//		boolean deleteDonerDetails = myUserDetailsServiceImpl.deleteDonerDetails(id);
+//		return deleteDonerDetails
+//				? ResponseEntity.status(HttpStatus.OK).body(defaultValues.getMessage().get(AppConstants.DELETE))
+//				: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+//	}
 
 	@GetMapping(value = "/getAllRequestOfDonar/{donarId}")
 	public ResponseEntity<List<RequesterDetailsDto>> getAllRequestOfDonarForApproving(@PathVariable Long donarId)
@@ -89,7 +88,4 @@ public class DonarDetailsController {
 
 	}
 
-	
-	
-	
 }

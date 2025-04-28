@@ -34,7 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RequestMapping("/userDetails")
 @RestController
-@CrossOrigin(value = "*")
+//@CrossOrigin(value = "*")
 public class UserDetailsController {
 
 	private Logger logger = LoggerFactory.getLogger(UserDetailsController.class);
@@ -71,7 +71,7 @@ public class UserDetailsController {
 			}
 
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.error("error ",ex.getMessage());
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 	}
@@ -88,8 +88,8 @@ public class UserDetailsController {
 				return new ResponseEntity<>(jwtToken, HttpStatus.OK);
 			}
 
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception ex) {
+			logger.error("error ",ex.getMessage());
 		}
 		return new ResponseEntity<String>(defaultValues.getMessage().get(AppConstants.INVALID), HttpStatus.BAD_REQUEST);
 	}
@@ -116,7 +116,7 @@ public class UserDetailsController {
 
 	// for updating the donar person details donar can chage his personal details
 	// only but not id , username, password
-	@PutMapping("/updatedoner")
+	@PutMapping("/updateDoner")
 	public ResponseEntity<String> updateDonerDetails(@RequestBody UsersDto usersDto) throws UserNotFoundException {
 		logger.info("Cursor enter in to Doner updation method inside controller");
 		boolean insertUserDetails = donarDetailsServiceImpl.updateDonarDetails(usersDto);

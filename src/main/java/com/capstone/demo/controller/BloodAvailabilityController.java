@@ -24,7 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RequestMapping("/blood")
 @RestController
-@CrossOrigin(value = "*")
+//@CrossOrigin(value = "*")
 public class BloodAvailabilityController {
 
 	private Logger logger = LoggerFactory.getLogger(BloodAvailabilityController.class);

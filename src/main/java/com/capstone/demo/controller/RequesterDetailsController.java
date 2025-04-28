@@ -32,7 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping(value = "/requester")
-@CrossOrigin(value = "*")
+//@CrossOrigin(value = "*")
 public class RequesterDetailsController {
 
 	private Logger logger = LoggerFactory.getLogger(RequesterDetailsController.class);
@@ -58,7 +58,7 @@ public class RequesterDetailsController {
 					: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.error("error ",ex.getMessage());
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 	}
@@ -72,7 +72,7 @@ public class RequesterDetailsController {
 					? ResponseEntity.status(HttpStatus.OK).body(defaultValues.getMessage().get(AppConstants.DELETE))
 					: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.error("error ",ex.getMessage());
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 	}

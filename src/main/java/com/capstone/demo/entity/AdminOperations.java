@@ -14,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,10 +31,11 @@ public class AdminOperations {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long adminId;
 
-	@ManyToOne()
+	@ManyToOne(cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "requester_id", nullable = false, referencedColumnName = "id")
 	private RequesterDetails requesterDetails;
 
+	@NotBlank
 	private String approvalStatus;
 
 	@UpdateTimestamp

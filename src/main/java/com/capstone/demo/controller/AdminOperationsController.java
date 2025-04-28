@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping(value = "admin")
-@CrossOrigin(value = "*")
+//@CrossOrigin(value = "*")
 public class AdminOperationsController {
 
 	private Logger logger = LoggerFactory.getLogger(AdminOperationsController.class);
@@ -53,7 +53,7 @@ public class AdminOperationsController {
 					: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.error("error ",ex.getMessage());
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 	}
@@ -115,7 +115,7 @@ public class AdminOperationsController {
 					? ResponseEntity.status(HttpStatus.OK).body(defaultValues.getMessage().get(AppConstants.DELETE))
 					: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.error("error ",ex.getMessage());
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 	}
